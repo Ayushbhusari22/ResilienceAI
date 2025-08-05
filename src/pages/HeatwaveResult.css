@@ -1,0 +1,346 @@
+/* Base Styles */
+.heatwave-container {
+    min-height: 100vh;
+    background: white;
+    color: rgb(0, 0, 0);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.heatwave-content {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+}
+
+/* Header Section */
+.heatwave-header {
+    margin-bottom: 2rem;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #1e40af;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.back-button:hover {
+    background-color: #1e3a8a;
+}
+
+.header-title {
+    margin-top: 1.5rem;
+    font-size: 1.875rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+}
+
+.alert-status {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+}
+
+.normal-status {
+    background-color: rgba(74, 222, 128, 0.2);
+    color: #4ade80;
+}
+
+.ai-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: rgba(30, 64, 175, 0.5);
+    border-radius: 0.5rem;
+    color: #facc15;
+}
+
+.message-box {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: rgba(30, 64, 175, 0.3);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(59, 130, 246, 0.5);
+    color: #bfdbfe;
+}
+
+/* Weather Cards */
+.weather-cards {
+    display: grid;
+    gap: 1.5rem;
+    padding: 2rem;
+}
+
+@media (min-width: 768px) {
+    .weather-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .weather-cards {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.weather-card {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid;
+}
+
+.temp-card {
+    background: linear-gradient(135deg, rgba(30, 64, 175, 0.4), rgba(30, 58, 138, 0.6));
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.humidity-card {
+    background: linear-gradient(135deg, rgba(19, 78, 74, 0.4), rgba(19, 78, 74, 0.6));
+    border-color: rgba(45, 212, 191, 0.3);
+}
+
+.wind-card {
+    background: linear-gradient(135deg, rgba(107, 33, 168, 0.4), rgba(107, 33, 168, 0.6));
+    border-color: rgba(168, 85, 247, 0.3);
+}
+
+.conditions-card {
+    background: linear-gradient(135deg, rgba(55, 48, 163, 0.4), rgba(55, 48, 163, 0.6));
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.temp-value {
+    font-size: 2.25rem;
+    font-weight: bold;
+}
+
+.feels-like {
+    color: #93c5fd;
+    margin-bottom: 0.25rem;
+}
+
+.humidity-bar-container {
+    width: 100%;
+    height: 0.5rem;
+    background-color: rgba(19, 78, 74, 0.5);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.humidity-bar {
+    height: 100%;
+    background-color: #2dd4bf;
+    border-radius: 9999px;
+}
+
+.wind-description {
+    color: #c4b5fd;
+    margin-top: 0.5rem;
+}
+
+.conditions-icon {
+    font-size: 1.5rem;
+}
+
+.conditions-description {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.cloud-cover {
+    color: #a5b4fc;
+    margin-top: 0.5rem;
+}
+
+/* Charts Section */
+.chart-section {
+    padding: 2rem;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.chart-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.chart-container {
+    height: 24rem;
+    background-color: rgba(17, 24, 39, 0.5);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    border: 1px solid rgba(55, 65, 81, 0.5);
+}
+
+.chart-grid {
+    display: grid;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+@media (min-width: 1024px) {
+    .chart-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.small-chart {
+    height: 20rem;
+}
+
+/* Detailed Forecast Table */
+.detailed-forecast {
+    margin-top: 2rem;
+}
+
+.table-container {
+    overflow-x: auto;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.forecast-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.forecast-table thead tr {
+    background-color: #f9fafb;
+}
+
+.forecast-table th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.forecast-table tbody tr {
+    background-color: white;
+}
+
+.forecast-table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.forecast-table td {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: #111827;
+    white-space: nowrap;
+}
+
+.status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.emergency-badge {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.warning-badge {
+    background-color: #ffedd5;
+    color: #9a3412;
+}
+
+.caution-badge {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.normal-badge {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+/* No Data Fallback */
+.no-data {
+    padding: 2rem;
+    text-align: center;
+}
+
+.no-data-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.no-data-text {
+    color: #93c5fd;
+}
+
+.try-again-button {
+    margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.try-again-button:hover {
+    background-color: #1d4ed8;
+}
+
+/* Tooltip Styles */
+.recharts-tooltip-wrapper {
+    background-color: #111827 !important;
+    border-color: #374151 !important;
+    border-radius: 0.5rem !important;
+    color: #f3f4f6 !important;
+}
+
+/* Legend Styles */
+.recharts-legend-item {
+    color: #9ca3af !important;
+}
+
+.leaflet-container {
+    height: 100%;
+    width: 100%;
+}
