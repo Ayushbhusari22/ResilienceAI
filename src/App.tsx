@@ -1,29 +1,31 @@
-import { useState, useEffect, /* other hooks */ } from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import {
     Brain, Command, Shield, Zap,
     Radio, ChevronRight,
-    Satellite, Radar
+    Satellite, Radar,
+    AlertTriangle,
+    BarChart3
 } from 'lucide-react';
-// import CaseStudies from './components/CaseStudies';
 import Prediction from './pages/Prediction';
 import PredictionResults from './pages/PredictionResults';
-// import ResponseCoordinationLogin from './pages/ResponseCoordinationLogin';
-// import CreateAccount from './pages/CreateAccount';
-// import PopulationSafety from './pages/PopulationSafety';
 import HeatwavePrediction from './pages/HeatwavePrediction';
 import HeatwaveResult from './pages/HeatwaveResult';
 import FloodPrediction from './pages/FloodPrediction';
 import FloodResult from './pages/FloodResult';
-// import PopulationSafetyResults from './pages/PopulationSafetyResults';
 import LearnMore from './pages/LearnMore';
+import ResponseCoordination from './pages/ResponseCoordination';
+// import CaseStudies from './components/CaseStudies';
+// import ResponseCoordinationLogin from './pages/ResponseCoordinationLogin';
+// import CreateAccount from './pages/CreateAccount';
+// import PopulationSafety from './pages/PopulationSafety';
+// import PopulationSafetyResults from './pages/PopulationSafetyResults';
 // // import AuthGuard from './components/AuthGuard';
 // import GeospatialAnalysis from './pages/GeospatialAnalysis';
 // import GeospatialResults from './pages/GeospatialResults';
 // import DataAnalytics from './pages/DataAnalytics';
 // import DataAnalyticsResults from './pages/DataAnalyticsResults';
 // import EmergencyNotifications from './components/EmergencyNotifications
-import ResponseCoordination from './pages/ResponseCoordination';
 import './App.css';
 import './App2.css';
 // import './new.css';
@@ -244,7 +246,7 @@ function HomePage() {
                             title="Real-time Prediction"
                             description="Disaster monitoring: Focused on wildfires, earthquakes, floods and weather."
                         />
-                        {/* <FeatureCard
+                        <FeatureCard
                             icon={AlertTriangle}
                             title="Early Warning System"
                             description="Advanced ML models process real-time data for accurate early warnings"
@@ -253,7 +255,7 @@ function HomePage() {
                             icon={Map}
                             title="Cyclone Analysis"
                             description="Advanced mapping and terrain analysis for precise risk assessment"
-                        /> */}
+                        />
                         <FeatureCard
                             icon={Command}
                             title="Flood Prediction"
@@ -264,11 +266,11 @@ function HomePage() {
                             title="Heatwave Prediction"
                             description="Health-impact focused heat alerts"
                         />
-                        {/* <FeatureCard
+                        <FeatureCard
                             icon={BarChart3}
                             title="Data Analytics"
                             description="Real-time visualization and predictive analytics"
-                        /> */}
+                        />
                     </div>
                 </div>
             </div>

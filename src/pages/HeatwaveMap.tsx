@@ -16,13 +16,13 @@ import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 //       box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.7);
 //       opacity: 0.7;
 //     }
-    
+
 //     70% {
 //       transform: scale(1);
 //       box-shadow: 0 0 0 10px rgba(255, 82, 82, 0);
 //       opacity: 0.9;
 //     }
-    
+
 //     100% {
 //       transform: scale(0.95);
 //       box-shadow: 0 0 0 0 rgba(255, 82, 82, 0);
@@ -195,7 +195,7 @@ const HeatwaveMap: React.FC<{
 
     // Initialize map
     useEffect(() => {
-        if (!mapContainerRef.current || mapRef.current) return;
+        if (!mapContainerRef.current || mapRef.current !== null) return;
 
         try {
             // Initialize map
@@ -208,8 +208,17 @@ const HeatwaveMap: React.FC<{
             L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
                 maxZoom: 20,
                 subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-                attribution: '&copy; Google Maps'
+                // attribution: '&copy; Google Maps'
             }).addTo(map);
+
+            // const MAPTILER_API_KEY = import.meta.env.VITE_MAPTILER_API_KEY;
+
+            // L.tileLayer(`https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=${MAPTILER_API_KEY}`, {
+            //     attribution: '&copy; MapTiler & OpenStreetMap contributors',
+            //     tileSize: 512,
+            //     zoomOffset: -1,
+            //     maxZoom: 20
+            // }).addTo(map);
 
             // Add layer group for markers
             const markersLayer = L.layerGroup().addTo(map);
