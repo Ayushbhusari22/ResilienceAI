@@ -4,7 +4,7 @@ import StatsSection from '../components/StatsSection';
 import TechnologySection from '../components/TechnologySection';
 import FeaturesSection from '../components/FeaturesSection';
 import TestimonialSection from '../components/TestimonialSection';
-import CTASection from '../components/CTASection';
+// import CTASection from '../components/CTASection';
 import Footer from '../components/Footer';
 
 export default function HomePage() {
@@ -31,7 +31,7 @@ export default function HomePage() {
       <TestimonialSection />
 
       {/* CTA Section */}
-      <CTASection />
+      {/* <CTASection /> */}
 
       {/* Footer */}
       <Footer />
