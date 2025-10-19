@@ -6,7 +6,6 @@ export default function CTASection() {
 
     return (
         <div className="bg-slate-950">
-
             <div className="py-20 border-t border-slate-800 relative overflow-hidden">
                 <div className="container mx-auto px-6 relative z-10 text-center">
                     <h2 className="text-4xl font-bold text-white mb-6">Ready to Save Lives?</h2>
