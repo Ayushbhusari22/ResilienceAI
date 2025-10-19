@@ -1,19 +1,20 @@
 import StatCard from './StatCard';
-import './App.css';
+// import './StatsSection.css';
 
-function StatsSection() {
+export default function StatsSection() {
     return (
-        <div className="stats-section">
-            <div className="stats-container">
-                <div className="stats-grid">
-                    <StatCard value="15min" label="Average Response Time" />
-                    <StatCard value="24/7" label="Real-time Monitoring" />
-                    <StatCard value="500+" label="Active Sensors" />
-                    <StatCard value="12+" label="Risk Factors Analyzed" />
+        <div className="bg-slate-950">
+
+            <div className="relative py-20 border-t border-slate-800">
+                <div className="container mx-auto px-6">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <StatCard value="15min" label="Response Time" />
+                        <StatCard value="24/7" label="Monitoring" />
+                        <StatCard value="500+" label="Active Sensors" />
+                        <StatCard value="12+" label="Risk Factors" />
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
-
-export default StatsSection;

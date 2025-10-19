@@ -4,7 +4,7 @@ import { MapPin } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { FloodRiskMapProps } from '../models/types';
-import './new.css';
+// import './new.css';
 
 // Custom marker icon fix (important for correct positioning)
 // This addresses the issue with default markers not loading properly

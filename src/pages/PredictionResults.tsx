@@ -3,11 +3,9 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import {
   ArrowLeft, AlertTriangle, Shield, Wind,
   Droplets, Thermometer, Waves,
-  CloudRain, Flame
+  CloudRain, Flame,
 } from 'lucide-react';
-// import { format } from 'date-fns';
 import {
-
   XAxis,
   YAxis,
   CartesianGrid,
@@ -20,7 +18,6 @@ import {
   Bar
 } from 'recharts';
 import EarthquakeDashboard from './EarthquakeDashboard';
-// import React from 'react';
 
 interface DisasterData {
   city: string;
@@ -103,37 +100,67 @@ const DisasterMetricCard = ({
   value: string | number;
   unit: string;
   status?: 'normal' | 'warning' | 'critical';
-}) => (
-  <div className="bg-white rounded-lg p-4 shadow">
-    <div className="flex items-center justify-between mb-2">
-      <div className="flex items-center gap-2">
-        <Icon className="w-5 h-5 text-gray-600" />
-        <h3 className="font-medium text-gray-700">{title}</h3>
+}) => {
+  const statusColors = {
+    critical: 'from-red-500/20 to-red-500/5 border-red-500/30 hover:border-red-500/50',
+    warning: 'from-yellow-500/20 to-yellow-500/5 border-yellow-500/30 hover:border-yellow-500/50',
+    normal: 'from-emerald-500/20 to-emerald-500/5 border-emerald-500/30 hover:border-emerald-500/50'
+  };
+
+  const statusTextColors = {
+    critical: 'text-red-400',
+    warning: 'text-yellow-400',
+    normal: 'text-emerald-400'
+  };
+
+  const statusLabelColors = {
+    critical: 'text-red-300',
+    warning: 'text-yellow-300',
+    normal: 'text-emerald-300'
+  };
+
+  const currentStatus = status || 'normal';
+
+  return (
+    <div className={`group relative rounded-xl p-4 bg-gradient-to-br ${statusColors[currentStatus]} backdrop-blur-xl border transition-all overflow-hidden`}>
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-600/0 to-pink-600/0 group-hover:from-purple-600/5 group-hover:to-pink-600/5 transition-all"></div>
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <Icon className={`w-5 h-5 ${statusTextColors[currentStatus]}`} />
+            <h3 className="font-medium text-slate-300 text-sm">{title}</h3>
+          </div>
+        </div>
+        <div className="flex items-baseline gap-2 mb-3">
+          <span className="text-2xl font-bold text-white">{value}</span>
+          <span className="text-slate-400 text-xs">{unit}</span>
+        </div>
+        {status && (
+          <div className={`text-xs font-semibold ${statusLabelColors[currentStatus]}`}>
+            {status === 'critical' ? '🔴 Critical' :
+             status === 'warning' ? '🟡 Warning' :
+             '🟢 Normal'}
+          </div>
+        )}
       </div>
     </div>
-    <div className="flex items-baseline gap-2">
-      <span className="text-2xl font-bold">{value}</span>
-      <span className="text-gray-500 text-sm">{unit}</span>
-    </div>
-    {status && (
-      <div className={`mt-2 text-sm ${status === 'critical' ? 'text-red-500' :
-        status === 'warning' ? 'text-yellow-500' :
-          'text-green-500'
-        }`}>
-        {status === 'critical' ? 'Critical' :
-          status === 'warning' ? 'Warning' :
-            'Normal'}
-      </div>
-    )}
-  </div>
-);
+  );
+};
 
 const RiskIndicator = ({ level }: { level: string }) => {
   const getRiskColor = () => {
     switch (level.toLowerCase()) {
-      case 'high': return 'text-red-500';
-      case 'medium': return 'text-yellow-500';
-      default: return 'text-green-500';
+      case 'high': return 'text-red-400';
+      case 'medium': return 'text-yellow-400';
+      default: return 'text-emerald-400';
+    }
+  };
+
+  const getRiskBg = () => {
+    switch (level.toLowerCase()) {
+      case 'high': return 'bg-red-400';
+      case 'medium': return 'bg-yellow-400';
+      default: return 'bg-emerald-400';
     }
   };
 
@@ -147,8 +174,8 @@ const RiskIndicator = ({ level }: { level: string }) => {
 
   return (
     <div className={`flex items-center ${getRiskColor()}`}>
-      <div className={`w-3 h-3 rounded-full mr-2 ${getRiskColor().replace('text', 'bg')}`}></div>
-      <span className="font-medium">{getRiskLabel()}</span>
+      <div className={`w-2 h-2 rounded-full mr-2 ${getRiskBg()} animate-pulse`}></div>
+      <span className="font-semibold">{getRiskLabel()}</span>
     </div>
   );
 };
@@ -159,10 +186,8 @@ export default function DisasterDashboard() {
   const { city } = location.state || {};
 
   const [disasterData, setDisasterData] = useState<DisasterData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  // const [lastUpdated, setLastUpdated] = useState<string>('');
+  // const [isLoading, setIsLoading] = useState(true);
 
-  // Simulate fetching data from your Python backend
   useEffect(() => {
     if (!city) {
       navigate('/');
@@ -170,119 +195,24 @@ export default function DisasterDashboard() {
     }
 
     const fetchData = async () => {
-      setIsLoading(true);
       try {
-        // In a real app, this would be an API call to your Python backend
         const response = await fetch(`http://localhost:5000/disaster-monitor/${city}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        // Simulated response matching your Python backend structure
-        // const mockData: DisasterData = {
-        //   city: city,
-        //   coordinates: {
-        //     lat: 18.98,
-        //     lon: 72.83,
-        //     name: city,
-        //     country: "India",
-        //     admin1: "Maharashtra"
-        //   },
-        //   current_weather: {
-        //     temperature: 28.2,
-        //     humidity: 91,
-        //     wind_speed: 2.1,
-        //     pressure: 1013,
-        //     precipitation: 0.0,
-        //     conditions: "Clear",
-        //     description: "Clear skies",
-        //     timestamp: new Date().toISOString()
-        //   },
-        //   forecast: {
-        //     temperature: 27.9,
-        //     humidity: 87,
-        //     wind_speed: 3.2,
-        //     pressure: 1012,
-        //     precipitation: 0.0,
-        //     probability: 0,
-        //     conditions: "Clear",
-        //     description: "Clear skies",
-        //     timestamp: new Date(Date.now() + 3600000).toISOString()
-        //   },
-        //   flood_data: {
-        //     water_level: 0.0,
-        //     risk_level: "low",
-        //     probability: 0,
-        //     terrain: "flat",
-        //     timestamp: new Date().toISOString()
-        //   },
-        //   wildfire_data: {
-        //     active_fires: [],
-        //     nearby: false,
-        //     risk_level: "low",
-        //     timestamp: new Date().toISOString()
-        //   },
-        //   alerts: [],
-        //   timestamp: new Date().toISOString()
-        // };
-
-        // // For Ooty simulation (uncomment to test)
-        // if (city.toLowerCase() === 'ooty') {
-        //   mockData.current_weather.precipitation = 8.5;
-        //   mockData.current_weather.conditions = "Moderate Rain";
-        //   mockData.current_weather.description = "Moderate rain (8.5mm)";
-        //   mockData.forecast.precipitation = 12.0;
-        //   mockData.forecast.probability = 85;
-        //   mockData.forecast.conditions = "Heavy Rain";
-        //   mockData.flood_data.water_level = 15.2;
-        //   mockData.flood_data.risk_level = "high";
-        //   mockData.flood_data.probability = 85;
-        //   mockData.flood_data.terrain = "hilly";
-        //   mockData.alerts = [
-        //     {
-        //       type: "weather",
-        //       level: "high",
-        //       message: "Heavy rain expected in the next hour: 12.0 mm"
-        //     },
-        //     {
-        //       type: "flood",
-        //       level: "high",
-        //       message: "High flood risk! Water level: 15.2 mm"
-        //     }
-        //   ];
-        // }
-
-        // setDisasterData(mockData);
         setDisasterData(data);
-
-        // setLastUpdated(format(new Date(), 'HH:mm:ss'));
       } catch (error) {
         console.error("Error fetching disaster data:", error);
       } finally {
-        setIsLoading(false);
+        // setIsLoading(false);
       }
     };
 
     fetchData();
-
-    // Set up polling (every 5 minutes in this example)
     const interval = setInterval(fetchData, 300000);
-
     return () => clearInterval(interval);
   }, [city, navigate]);
-
-  // Prepare chart data
-  // const weatherHistory = [
-  //   { time: '00:00', temp: 26, humidity: 85 },
-  //   { time: '03:00', temp: 25, humidity: 88 },
-  //   { time: '06:00', temp: 24, humidity: 90 },
-  //   { time: '09:00', temp: 26, humidity: 87 },
-  //   { time: '12:00', temp: 29, humidity: 80 },
-  //   { time: '15:00', temp: 30, humidity: 75 },
-  //   { time: '18:00', temp: 28, humidity: 82 },
-  //   { time: '21:00', temp: 27, humidity: 85 },
-  //   { time: '24:00', temp: 26, humidity: 88 }
-  // ];
 
   const floodRiskHistory = [
     { time: '00:00', level: 0.5, risk: 20 },
@@ -300,15 +230,12 @@ export default function DisasterDashboard() {
     if (!disasterData) return 0;
 
     let score = 0;
-    // Flood risk contribution
     if (disasterData.flood_data.risk_level === 'high') score += 70;
     else if (disasterData.flood_data.risk_level === 'medium') score += 40;
 
-    // Wildfire risk contribution
     if (disasterData.wildfire_data.risk_level === 'high') score += 70;
     else if (disasterData.wildfire_data.risk_level === 'medium') score += 40;
 
-    // Weather risk contribution
     if (disasterData.current_weather.temperature > 35) score += 30;
     if (disasterData.current_weather.wind_speed > 15) score += 20;
     if (disasterData.current_weather.precipitation > 10) score += 25;
@@ -316,268 +243,242 @@ export default function DisasterDashboard() {
     return Math.min(100, score);
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-lg text-gray-700">Loading disaster data for {city}...</p>
-        </div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="w-16 h-16 rounded-full border-2 border-slate-700 border-t-purple-500 animate-spin mx-auto mb-6"></div>
+  //         <p className="text-lg text-slate-400">Loading disaster data for {city}...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (!disasterData) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <Link
-          to="/"
-          className="inline-flex items-center text-white hover:text-[#FACC15] transition-colors mb-8"
-        >
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <Link to="/" className="inline-flex items-center text-slate-400 hover:text-purple-300 transition-colors">
           <ArrowLeft className="w-5 h-5 mr-2" />
-          Back
+          Back to Home
         </Link>
-        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-950">
       {/* Header */}
-      <div className="bg-blue-900 text-white">
-        <div className="container mx-auto px-4 py-6">
+      <div className="relative border-b border-slate-800 bg-gradient-to-b from-slate-900 to-slate-950">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-600/20 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="container mx-auto px-6 py-8 relative z-10">
           <button
             onClick={() => navigate('/')}
-            className="flex items-center text-yellow-400 hover:text-yellow-300 transition-colors mb-4"
+            className="flex items-center text-slate-400 hover:text-purple-300 transition-colors mb-6 group"
           >
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            Back
+            <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
+            Back to Home
           </button>
-          <h1 className="text-3xl font-bold mb-2">Disaster Risk Dashboard</h1>
-          <div className="flex items-center">
-            <span className="text-lg text-yellow-400">
-              {/* <MapPin size={14} /> */}
-              {disasterData.city}, {disasterData.coordinates.country}
-            </span>
-          </div>
+          <h1 className="text-4xl font-bold text-white mb-2">Disaster Risk Dashboard</h1>
+          <p className="text-slate-400 text-lg">
+            {disasterData.city}, {disasterData.coordinates.country}
+          </p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Risk Assessment */}
+          {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Current Risk Level */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">Current Risk Assessment</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <h3 className="text-sm font-medium text-blue-800 mb-2">Flood Risk</h3>
-                  <RiskIndicator level={disasterData.flood_data.risk_level} />
-                  <p className="text-gray-600 text-sm mt-2">
-                    Water level: {disasterData.flood_data.water_level}mm
-                  </p>
-                </div>
-                <div className="bg-orange-50 p-4 rounded-lg">
-                  <h3 className="text-sm font-medium text-orange-800 mb-2">Wildfire Risk</h3>
-                  <RiskIndicator level={disasterData.wildfire_data.risk_level} />
-                  <p className="text-gray-600 text-sm mt-2">
-                    {disasterData.wildfire_data.active_fires.length} active fires
-                  </p>
-                </div>
-                <div className="bg-purple-50 p-4 rounded-lg">
-                  <h3 className="text-sm font-medium text-purple-800 mb-2">Overall Risk Score</h3>
-                  <div className="flex items-center justify-between">
-                    <div className={`text-3xl font-bold ${getRiskScore() > 70 ? 'text-red-500' :
-                      getRiskScore() > 40 ? 'text-yellow-500' : 'text-green-500'
+            {/* Current Risk Assessment */}
+            <div className="relative rounded-2xl overflow-hidden border border-slate-700/50 bg-gradient-to-br from-slate-800 to-slate-900 p-8 shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 to-pink-600/5"></div>
+              
+              <div className="relative z-10">
+                <h2 className="text-2xl font-bold text-white mb-6">Current Risk Assessment</h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                  {/* Flood Risk */}
+                  <div className="rounded-xl p-4 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-sm font-medium text-slate-300 mb-3">Flood Risk</h3>
+                    <RiskIndicator level={disasterData.flood_data.risk_level} />
+                    <p className="text-slate-400 text-xs mt-3">
+                      Water level: <span className="text-white font-semibold">{disasterData.flood_data.water_level}mm</span>
+                    </p>
+                  </div>
+
+                  {/* Wildfire Risk */}
+                  <div className="rounded-xl p-4 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-sm font-medium text-slate-300 mb-3">Wildfire Risk</h3>
+                    <RiskIndicator level={disasterData.wildfire_data.risk_level} />
+                    <p className="text-slate-400 text-xs mt-3">
+                      Active fires: <span className="text-white font-semibold">{disasterData.wildfire_data.active_fires.length}</span>
+                    </p>
+                  </div>
+
+                  {/* Overall Risk Score */}
+                  <div className="rounded-xl p-4 bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50">
+                    <h3 className="text-sm font-medium text-slate-300 mb-3">Overall Risk Score</h3>
+                    <div className="flex items-center justify-between">
+                      <div className={`text-3xl font-bold ${
+                        getRiskScore() > 70 ? 'text-red-400' :
+                        getRiskScore() > 40 ? 'text-yellow-400' : 'text-emerald-400'
                       }`}>
-                      {getRiskScore()}%
-                    </div>
-                    <Shield className={`w-8 h-8 ${getRiskScore() > 70 ? 'text-red-500' :
-                      getRiskScore() > 40 ? 'text-yellow-500' : 'text-green-500'
+                        {getRiskScore()}%
+                      </div>
+                      <Shield className={`w-8 h-8 ${
+                        getRiskScore() > 70 ? 'text-red-400' :
+                        getRiskScore() > 40 ? 'text-yellow-400' : 'text-emerald-400'
                       }`} />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Risk Trend Chart */}
-              <div className="h-64 mt-6">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={floodRiskHistory}>
-                    <defs>
-                      <linearGradient id="riskGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#E63946" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#E63946" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="time" />
-                    <YAxis yAxisId="left" domain={[0, 10]} />
-                    <YAxis yAxisId="right" orientation="right" domain={[0, 100]} />
-                    <Tooltip />
-                    <Legend />
-                    <Area
-                      yAxisId="left"
-                      type="monotone"
-                      dataKey="level"
-                      stroke="#1D3557"
-                      fill="#1D3557"
-                      fillOpacity={0.2}
-                      name="Water Level (m)"
-                    />
-                    <Area
-                      yAxisId="right"
-                      type="monotone"
-                      dataKey="risk"
-                      stroke="#E63946"
-                      fill="url(#riskGradient)"
-                      name="Risk Score (%)"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+                {/* Risk Trend Chart */}
+                <div className="h-64 rounded-xl overflow-hidden bg-slate-800/30 p-4 border border-slate-700/50">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={floodRiskHistory}>
+                      <defs>
+                        <linearGradient id="riskGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#ef4444" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                      <XAxis dataKey="time" stroke="#94a3b8" />
+                      <YAxis yAxisId="left" domain={[0, 10]} stroke="#94a3b8" />
+                      <YAxis yAxisId="right" orientation="right" domain={[0, 100]} stroke="#94a3b8" />
+                      <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #475569', borderRadius: '8px', color: '#e2e8f0' }} />
+                      <Legend />
+                      <Area
+                        yAxisId="left"
+                        type="monotone"
+                        dataKey="level"
+                        stroke="#3b82f6"
+                        fill="#3b82f6"
+                        fillOpacity={0.2}
+                        name="Water Level (m)"
+                      />
+                      <Area
+                        yAxisId="right"
+                        type="monotone"
+                        dataKey="risk"
+                        stroke="#ef4444"
+                        fill="url(#riskGradient)"
+                        name="Risk Score (%)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </div>
 
             {/* Monitoring Sections */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Weather Monitoring */}
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
-                  <CloudRain className="w-6 h-6 text-blue-500" />
-                  Weather Monitor
-                </h2>
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <DisasterMetricCard
-                    title="Temperature"
-                    icon={Thermometer}
-                    value={disasterData.current_weather.temperature}
-                    unit="°C"
-                    status={disasterData.current_weather.temperature > 35 ? 'critical' :
-                      disasterData.current_weather.temperature > 30 ? 'warning' : 'normal'}
-                  />
-                  <DisasterMetricCard
-                    title="Wind Speed"
-                    icon={Wind}
-                    value={disasterData.current_weather.wind_speed.toFixed(2)}
-                    unit="m/s"
-                    status={disasterData.current_weather.wind_speed > 20 ? 'critical' :
-                      disasterData.current_weather.wind_speed > 15 ? 'warning' : 'normal'}
-                  />
-                  <DisasterMetricCard
-                    title="Humidity"
-                    icon={Droplets}
-                    value={disasterData.current_weather.humidity}
-                    unit="%"
-                  />
-                  <DisasterMetricCard
-                    title="Precipitation"
-                    icon={CloudRain}
-                    value={disasterData.current_weather.precipitation}
-                    unit="mm"
-                    status={disasterData.current_weather.precipitation > 10 ? 'critical' :
-                      disasterData.current_weather.precipitation > 5 ? 'warning' : 'normal'}
-                  />
+              {/* Weather Monitor */}
+              <div className="relative rounded-2xl overflow-hidden border border-slate-700/50 bg-gradient-to-br from-slate-800 to-slate-900 p-8 shadow-2xl">
+                <div className="relative z-10">
+                  <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                    <CloudRain className="w-6 h-6 text-cyan-400" />
+                    Weather Monitor
+                  </h2>
+                  <div className="grid grid-cols-2 gap-4">
+                    <DisasterMetricCard
+                      title="Temperature"
+                      icon={Thermometer}
+                      value={disasterData.current_weather.temperature}
+                      unit="°C"
+                      status={disasterData.current_weather.temperature > 35 ? 'critical' :
+                        disasterData.current_weather.temperature > 30 ? 'warning' : 'normal'}
+                    />
+                    <DisasterMetricCard
+                      title="Wind Speed"
+                      icon={Wind}
+                      value={disasterData.current_weather.wind_speed.toFixed(2)}
+                      unit="m/s"
+                      status={disasterData.current_weather.wind_speed > 20 ? 'critical' :
+                        disasterData.current_weather.wind_speed > 15 ? 'warning' : 'normal'}
+                    />
+                    <DisasterMetricCard
+                      title="Humidity"
+                      icon={Droplets}
+                      value={disasterData.current_weather.humidity}
+                      unit="%"
+                    />
+                    <DisasterMetricCard
+                      title="Precipitation"
+                      icon={CloudRain}
+                      value={disasterData.current_weather.precipitation}
+                      unit="mm"
+                      status={disasterData.current_weather.precipitation > 10 ? 'critical' :
+                        disasterData.current_weather.precipitation > 5 ? 'warning' : 'normal'}
+                    />
+                  </div>
                 </div>
-
-                {/* Weather History Chart */}
-                {/* <div className="h-64 mt-6">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={weatherHistory}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="time" />
-                      <YAxis yAxisId="temp" domain={['auto', 'auto']} />
-                      <YAxis yAxisId="humidity" orientation="right" domain={[0, 100]} />
-                      <Tooltip />
-                      <Legend />
-                      <Line
-                        yAxisId="temp"
-                        type="monotone"
-                        dataKey="temp"
-                        stroke="#E63946"
-                        name="Temperature (°C)"
-                      />
-                      <Line
-                        yAxisId="humidity"
-                        type="monotone"
-                        dataKey="humidity"
-                        stroke="#457B9D"
-                        name="Humidity (%)"
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div> */}
-
-
               </div>
 
-
-              {/* Flood & Fire Monitoring */}
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
-                  <Waves className="w-6 h-6 text-blue-500" />
-                  Hazard Monitor
-                </h2>
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <DisasterMetricCard
-                    title="Flood Risk"
-                    icon={Waves}
-                    value={disasterData.flood_data.risk_level.toUpperCase()}
-                    unit=""
-                    status={disasterData.flood_data.risk_level === 'high' ? 'critical' :
-                      disasterData.flood_data.risk_level === 'medium' ? 'warning' : 'normal'}
-                  />
-                  <DisasterMetricCard
-                    title="Fire Risk"
-                    icon={Flame}
-                    value={disasterData.wildfire_data.risk_level.toUpperCase()}
-                    unit=""
-                    status={disasterData.wildfire_data.risk_level === 'high' ? 'critical' :
-                      disasterData.wildfire_data.risk_level === 'medium' ? 'warning' : 'normal'}
-                  />
-                  <DisasterMetricCard
-                    title="Rain Probability"
-                    icon={CloudRain}
-                    value={disasterData.forecast.probability}
-                    unit="%"
-                  />
-                  <DisasterMetricCard
-                    title="Active Fires"
-                    icon={Flame}
-                    value={disasterData.wildfire_data.active_fires.length}
-                    unit=""
-                  />
-                </div>
-
-                {/* Fire Distance Chart */}
-                {disasterData.wildfire_data.active_fires.length > 0 && (
-                  <div className="h-64 mt-6">
-                    <h3 className="text-sm font-medium text-gray-700 mb-2">Active Fire Distances</h3>
-                    <ResponsiveContainer width="100%" height="80%">
-                      <BarChart
-                        data={disasterData.wildfire_data.active_fires.slice(0, 5).map(fire => ({
-                          name: `${fire.distance_km.toFixed(1)} km`,
-                          distance: fire.distance_km,
-                          intensity: fire.intensity
-                        }))}
-                        layout="vertical"
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis type="number" />
-                        <YAxis dataKey="name" type="category" width={80} />
-                        <Tooltip />
-                        <Legend />
-                        <Bar
-                          dataKey="distance"
-                          name="Distance (km)"
-                          fill="#E63946"
-                          radius={[0, 4, 4, 0]}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
+              {/* Hazard Monitor */}
+              <div className="relative rounded-2xl overflow-hidden border border-slate-700/50 bg-gradient-to-br from-slate-800 to-slate-900 p-8 shadow-2xl">
+                <div className="relative z-10">
+                  <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                    <Waves className="w-6 h-6 text-cyan-400" />
+                    Hazard Monitor
+                  </h2>
+                  <div className="grid grid-cols-2 gap-4">
+                    <DisasterMetricCard
+                      title="Flood Risk"
+                      icon={Waves}
+                      value={disasterData.flood_data.risk_level.toUpperCase()}
+                      unit=""
+                      status={disasterData.flood_data.risk_level === 'high' ? 'critical' :
+                        disasterData.flood_data.risk_level === 'medium' ? 'warning' : 'normal'}
+                    />
+                    <DisasterMetricCard
+                      title="Fire Risk"
+                      icon={Flame}
+                      value={disasterData.wildfire_data.risk_level.toUpperCase()}
+                      unit=""
+                      status={disasterData.wildfire_data.risk_level === 'high' ? 'critical' :
+                        disasterData.wildfire_data.risk_level === 'medium' ? 'warning' : 'normal'}
+                    />
+                    <DisasterMetricCard
+                      title="Rain Probability"
+                      icon={CloudRain}
+                      value={disasterData.forecast.probability}
+                      unit="%"
+                    />
+                    <DisasterMetricCard
+                      title="Active Fires"
+                      icon={Flame}
+                      value={disasterData.wildfire_data.active_fires.length}
+                      unit=""
+                    />
                   </div>
-                )}
+
+                  {disasterData.wildfire_data.active_fires.length > 0 && (
+                    <div className="h-48 rounded-xl overflow-hidden bg-slate-800/30 p-4 border border-slate-700/50 mt-4">
+                      <h3 className="text-sm font-medium text-slate-300 mb-3">Active Fire Distances</h3>
+                      <ResponsiveContainer width="100%" height="80%">
+                        <BarChart
+                          data={disasterData.wildfire_data.active_fires.slice(0, 5).map(fire => ({
+                            name: `${fire.distance_km.toFixed(1)} km`,
+                            distance: fire.distance_km,
+                            intensity: fire.intensity
+                          }))}
+                          layout="vertical"
+                        >
+                          <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                          <XAxis type="number" stroke="#94a3b8" />
+                          <YAxis dataKey="name" type="category" width={80} stroke="#94a3b8" />
+                          <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #475569', borderRadius: '8px', color: '#e2e8f0' }} />
+                          <Bar dataKey="distance" name="Distance (km)" fill="#ef4444" radius={[0, 4, 4, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -589,84 +490,87 @@ export default function DisasterDashboard() {
             )}
           </div>
 
-          {/* Alerts and Recommendations */}
+          {/* Sidebar - Alerts & Recommendations */}
           <div className="space-y-8">
             {/* Live Alerts */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">Active Alerts</h2>
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                  <span className="text-sm text-gray-500">Live Updates</span>
+            <div className="relative rounded-2xl overflow-hidden border border-slate-700/50 bg-gradient-to-br from-slate-800 to-slate-900 p-6 shadow-2xl">
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-white">Active Alerts</h2>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                    <span className="text-xs text-slate-400">Live</span>
+                  </div>
                 </div>
-              </div>
-              <div className="space-y-4">
-                {disasterData.alerts.length === 0 ? (
-                  <p className="text-gray-500 text-center py-4">No active alerts</p>
-                ) : (
-                  disasterData.alerts.map((alert, index) => (
-                    <div
-                      key={index}
-                      className={`p-4 rounded-lg border ${alert.level === 'high'
-                        ? 'bg-red-50 border-red-200'
-                        : 'bg-yellow-50 border-yellow-200'
-                        }`}
-                    >
-                      <div className="flex items-start gap-3">
-                        <AlertTriangle className={`w-5 h-5 flex-shrink-0 ${alert.level === 'high' ? 'text-red-500' : 'text-yellow-500'
-                          }`} />
-                        <div>
-                          <p className={`font-medium ${alert.level === 'high' ? 'text-red-800' : 'text-yellow-800'
-                            }`}>
-                            {alert.message}
-                          </p>
-                          <p className="text-sm text-gray-500 mt-1">
-                            {alert.type.toUpperCase()} ALERT
-                          </p>
+                <div className="space-y-3">
+                  {disasterData.alerts.length === 0 ? (
+                    <p className="text-slate-500 text-center py-4 text-sm">No active alerts</p>
+                  ) : (
+                    disasterData.alerts.map((alert, index) => (
+                      <div
+                        key={index}
+                        className={`p-4 rounded-xl border backdrop-blur-sm ${alert.level === 'high'
+                          ? 'bg-red-500/10 border-red-500/30 hover:border-red-500/50'
+                          : 'bg-yellow-500/10 border-yellow-500/30 hover:border-yellow-500/50'
+                        } transition-all`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <AlertTriangle className={`w-5 h-5 flex-shrink-0 mt-0.5 ${alert.level === 'high' ? 'text-red-400' : 'text-yellow-400'
+                            }`} />
+                          <div>
+                            <p className={`font-medium text-sm ${alert.level === 'high' ? 'text-red-300' : 'text-yellow-300'
+                              }`}>
+                              {alert.message}
+                            </p>
+                            <p className="text-xs text-slate-400 mt-1">
+                              {alert.type.toUpperCase()}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))
-                )}
+                    ))
+                  )}
+                </div>
               </div>
             </div>
 
             {/* Safety Recommendations */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-semibold mb-6 text-gray-800">Safety Recommendations</h2>
-              <div className="space-y-4">
-                {disasterData.flood_data.risk_level === 'high' && (
-                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                    <h3 className="font-semibold text-blue-800 mb-2">Flood Preparedness</h3>
-                    <ul className="text-blue-600 text-sm list-disc pl-5 space-y-1">
-                      <li>Move to higher ground if in flood-prone area</li>
-                      <li>Avoid walking or driving through flood waters</li>
-                      <li>Follow evacuation orders from local authorities</li>
-                    </ul>
+            <div className="relative rounded-2xl overflow-hidden border border-slate-700/50 bg-gradient-to-br from-slate-800 to-slate-900 p-6 shadow-2xl">
+              <div className="relative z-10">
+                <h2 className="text-xl font-bold text-white mb-6">Safety Recommendations</h2>
+                <div className="space-y-3">
+                  {disasterData.flood_data.risk_level === 'high' && (
+                    <div className="p-4 bg-blue-500/10 rounded-xl border border-blue-500/30">
+                      <h3 className="font-semibold text-blue-300 mb-2 text-sm">Flood Preparedness</h3>
+                      <ul className="text-blue-400/80 text-xs list-disc pl-5 space-y-1">
+                        <li>Move to higher ground if in flood-prone area</li>
+                        <li>Avoid walking through flood waters</li>
+                        <li>Follow evacuation orders</li>
+                      </ul>
+                    </div>
+                  )}
+                  {disasterData.wildfire_data.risk_level === 'high' && (
+                    <div className="p-4 bg-orange-500/10 rounded-xl border border-orange-500/30">
+                      <h3 className="font-semibold text-orange-300 mb-2 text-sm">Wildfire Safety</h3>
+                      <ul className="text-orange-400/80 text-xs list-disc pl-5 space-y-1">
+                        <li>Prepare evacuation plan</li>
+                        <li>Create defensible space</li>
+                        <li>Monitor fire spread</li>
+                      </ul>
+                    </div>
+                  )}
+                  <div className="p-4 bg-emerald-500/10 rounded-xl border border-emerald-500/30">
+                    <h3 className="font-semibold text-emerald-300 mb-2 text-sm">Emergency Kit</h3>
+                    <p className="text-emerald-400/80 text-xs">
+                      Prepare water, food, medications, flashlight, batteries, and documents.
+                    </p>
                   </div>
-                )}
-                {disasterData.wildfire_data.risk_level === 'high' && (
-                  <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
-                    <h3 className="font-semibold text-orange-800 mb-2">Wildfire Safety</h3>
-                    <ul className="text-orange-600 text-sm list-disc pl-5 space-y-1">
-                      <li>Prepare an evacuation plan with multiple routes</li>
-                      <li>Create defensible space around your property</li>
-                      <li>Stay informed about fire spread directions</li>
-                    </ul>
+                  <div className="p-4 bg-purple-500/10 rounded-xl border border-purple-500/30">
+                    <h3 className="font-semibold text-purple-300 mb-2 text-sm">Stay Informed</h3>
+                    <p className="text-purple-400/80 text-xs">
+                      Monitor official alerts and follow local authority instructions.
+                    </p>
                   </div>
-                )}
-                <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                  <h3 className="font-semibold text-green-800 mb-2">Emergency Kit</h3>
-                  <p className="text-green-600 text-sm">
-                    Prepare an emergency kit with water, non-perishable food, medications,
-                    flashlight, batteries, and important documents.
-                  </p>
-                </div>
-                <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-                  <h3 className="font-semibold text-purple-800 mb-2">Stay Informed</h3>
-                  <p className="text-purple-600 text-sm">
-                    Monitor official weather alerts and follow instructions from local authorities.
-                  </p>
                 </div>
               </div>
             </div>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Clock, ArrowLeft, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Globe, AlertTriangle, ArrowRight, Loader2, MapPin } from 'lucide-react';
 import { checkHeatwave, fetchHistoricalData } from '../models/heatwave';
 import type { ApiError } from '../models/types';
 import { Link } from 'react-router-dom';
@@ -18,18 +18,18 @@ interface ResultData extends HeatwaveData {
 }
 
 // List of countries for the dropdown
-// const countries = [
-//     "United States",
-//     "Canada",
-//     "United Kingdom",
-//     "Australia",
-//     "Japan",
-//     "Germany",
-//     "France",
-//     "India",
-//     "Brazil",
-//     "South Africa",
-// ].sort();
+const countries = [
+    "United States",
+    "Canada",
+    "United Kingdom",
+    "Australia",
+    "Japan",
+    "Germany",
+    "France",
+    "India",
+    "Brazil",
+    "South Africa",
+].sort();
 
 const fetchCoordinates = async (city: string): Promise<{ lat: number, lng: number }> => {
     try {
@@ -51,21 +51,22 @@ const fetchCoordinates = async (city: string): Promise<{ lat: number, lng: numbe
 };
 
 export default function HeatwavePrediction() {
-    const navigate = useNavigate();
-    const [selectedCountry] = useState('');
-    const [city, setCity] = useState('');
-    const [loading, setLoading] = useState(false);
+     const navigate = useNavigate();
+     const [selectedCountry, setSelectedCountry] = useState('');
+     const [city, setCity] = useState('');
+     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<ApiError | null>(null);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!city.trim()) {
-            setError({ error: 'Validation Error', message: 'Please enter a city name' });
-            return;
-        }
-
-        setLoading(true);
-        setError(null);
+   
+     const handleSubmit = async (e: React.FormEvent) => {
+       e.preventDefault();
+   
+       if (!selectedCountry || !city) {
+           setError({ error: 'Validation Error', message: 'City and prediction period are required' });
+         return;
+       }
+   
+       setLoading(true);
+       setError(null);
 
         try {
             const data = await checkHeatwave(city);
@@ -98,99 +99,128 @@ export default function HeatwavePrediction() {
             // Log the final result before navigation for debugging
             // console.log("Navigating to results with data:", result);
 
-            // Use setTimeout to ensure state is properly set before navigation
-            setTimeout(() => {
-                navigate('/heatwave-result', {
-                    state: { result }
-                });
-            }, 100);
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            navigate('/heatwave-result', {
+                state: { result }
+            });
 
         } catch (err) {
-            console.error("API error:", err);
             setError({
                 error: 'API Error',
-                message: err instanceof Error ? err.message : "Failed to fetch heatwave data"
+                message: err instanceof Error ? err.message : "Failed to fetch flood prediction"
             });
+        } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-blue-900 via-[#1E3A8A] to-blue-900">
-            <div className="container mx-auto px-4 py-8">
+        <div className="min-h-screen bg-slate-950">
+              <div className="container mx-auto px-6 py-8">
                 <Link
-                    to="/"
-                    className="inline-flex items-center text-white hover:text-[#FACC15] transition-colors mb-8"
+                  to="/"
+                  className="inline-flex items-center text-slate-400 hover:text-purple-300 transition-colors mb-12 group"
                 >
-                    <ArrowLeft className="w-5 h-5 mr-2" />
-                    Back to Home
+                  <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
+                  Back to Home
                 </Link>
 
-                <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-xl p-8">
-                    <h1 className="text-3xl font-bold text-blue-900 mb-2">Heatwave Risk Analysis</h1>
-                    <p className="text-gray-600 mb-8">
-                        Enter your location to receive AI-powered heatwave risk assessment and early warnings.
-                    </p>
+                    <div className="max-w-2xl mx-auto">
+                        {/* Header */}
+                        <div className="text-center mb-6">
+                        <div className="flex justify-center mb-3">
+                            <div className="w-12 h-12 rounded-3xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                                <Globe className="w-8 h-8 text-white" />
+                            </div>
+                        </div>
+                            <h1 className="text-5xl font-bold text-white mb-3">
+                                Heatwave Risk Analysis
+                            </h1>
+                            <p className="text-slate-400 text-lg">
+                                Enter your location to receive AI-powered disaster risk Assessment
+                            </p>
+                        </div>
 
-                    <div className="mb-6 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded whitespace-nowrap">
-                        <div className="flex items-center">
-                            <AlertCircle className="w-5 h-5 mr-2 flex-shrink-0" />
-                            <span className="whitespace-nowrap"><strong>Note:</strong> This service is currently only available for India.</span>
+
+                    {/* Form Card */}
+                    <div className="bg-slate-800 relative rounded-2xl overflow-hidden border border-slate-700/50 shadow-2xl px-5 py-3">
+                        <div className="relative z-10 p-8 md:p-12 bg-slate-800">
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                {error && (
+                                    <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-start gap-3">
+                                        <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                                        <p className="text-red-300 text-sm">{error.error}</p>
+                                    </div>
+                                )}
+
+                                {/* Country Select */}
+                                <div>
+                                    <label htmlFor="country" className="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                                        <Globe className="w-4 h-4 text-cyan-400" />
+                                        Select Country
+                                    </label>
+                                    <select
+                                        id="country"
+                                        value={selectedCountry}
+                                        onChange={(e) => {
+                                            setSelectedCountry(e.target.value);
+                                            setError(null);
+                                        }}
+                                        required
+                                        className="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700/50 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 text-white placeholder-slate-500 transition-all appearance-none cursor-pointer"
+                                    >
+                                        <option value="" className="bg-slate-900 text-slate-400">Choose a country...</option>
+                                        {countries.map(country => (
+                                            <option key={country} value={country} className="bg-slate-900 text-white">{country}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* City Input */}
+                                <div>
+                                    <label htmlFor="city" className="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                                        <MapPin className="w-4 h-4 text-cyan-400" />
+                                        Enter City
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="city"
+                                        value={city}
+                                        onChange={(e) => {
+                                            setCity(e.target.value);
+                                            setError(null);
+                                        }}
+                                        required
+                                        placeholder="e.g., New York, Mumbai, Sydney"
+                                        className="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700/50 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 text-white placeholder-slate-500 transition-all"
+                                    />
+                                </div>
+
+                                {/* Submit Button */}
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className={`w-full py-3 px-6 rounded-xl text-white font-semibold flex items-center justify-center gap-2 transition-all ${loading
+                                        ? 'bg-slate-700 cursor-not-allowed'
+                                        : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:shadow-lg hover:shadow-purple-500/50 hover:scale-105'
+                                        }`}
+                                >
+                                    {loading ? (
+                                        <>
+                                            <Loader2 className="w-5 h-5 animate-spin" />
+                                            Analyzing Location...
+                                        </>
+                                    ) : (
+                                        <>
+                                            Start Prediction
+                                            <ArrowRight className="w-5 h-5" />
+                                        </>
+                                    )}
+                                </button>
+                            </form>
                         </div>
                     </div>
-
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div>
-                            <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
-                                Country
-                            </label>
-                            <select
-                                id="country"
-                                value={selectedCountry}
-                                disabled
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-100 cursor-not-allowed"
-                            >
-                                <option value="India">India</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-2">
-                                City
-                            </label>
-                            <input
-                                type="text"
-                                id="city"
-                                value={city}
-                                onChange={(e) => setCity(e.target.value)}
-                                required
-                                placeholder="Enter your city"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            />
-                        </div>
-
-                        {error && (
-                            <div className="p-4 bg-red-100 text-red-700 rounded-lg">
-                                <strong>{error.error}:</strong> {error.message}
-                            </div>
-                        )}
-
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className={`w-full py-3 px-6 rounded-lg text-white font-semibold transition-all ${loading
-                                ? 'bg-gray-400 cursor-not-allowed'
-                                : 'bg-[#E63946] hover:bg-red-700 hover:scale-[1.02]'
-                                }`}
-                        >
-                            {loading ? (
-                                <span className="flex items-center justify-center">
-                                    <Clock className="mr-2 h-4 w-4 animate-spin" />
-                                    Analyzing...
-                                </span>
-                            ) : 'Predict'}
-                        </button>
-                    </form>
                 </div>
             </div>
         </div>

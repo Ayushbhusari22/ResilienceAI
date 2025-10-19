@@ -1,418 +1,647 @@
-// import React from 'react';
+import { useState } from 'react';
 import {
   AlertCircle, Phone, MapPin, Shield, Thermometer,
-  Waves, Flame,  Wind
+  Waves, Flame, Wind, ArrowLeft, Zap, ChevronDown, ChevronUp,
+  AlertTriangle, Users, Book, Download, Sparkles
 } from 'lucide-react';
-import './response.css';
 
-export default function NaturalDisasterResponse() {
+export default function ResponseCoordination() {
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+
+  const toggleSection = (section: string) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
   return (
-    <div className="min-h-screen bg-white">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header Section */}
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="relative">
-              {/* <AlertCircle className="w-8 h-8 text-red-600 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" /> */}
-              <Shield className="w-16 h-16 text-blue-800" />
+    <div className="min-h-screen bg-slate-950">
+      <div className="container mx-auto px-6 py-6">
+        <button
+          onClick={() => window.location.href = '/'}
+          className="inline-flex items-center text-slate-400 hover:text-purple-300 transition-colors mb-8 group"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
+          <span className="font-medium">Back to Home</span>
+        </button>
+
+        {/* Header */}
+        <div className="text-center mb-10">
+          <div className="flex justify-center mb-3">
+            <div className="w-18 h-18 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+              <Zap className="w-12 h-12 text-white" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Indian Disaster Management System</h1>
-          <p className="text-xl text-yellow-600">Prediction • Preparation • Response</p>
-        </div>
-
-        {/* National Emergency Contacts */}
-        <div className=" bx bg-red-100 rounded-xl p-6 mb-8 border border-red-300 shadow-md">
-          <h2 className=" text-2xl font-bold text-gray-900 flex items-center gap-2 mb-4">
-            <Phone className="w-6 h-6 text-red-600" />
-            National Emergency Contacts
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="bx bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-2">National Emergency Number</h3>
-              <p className="text-2xl font-bold text-red-600">112</p>
-            </div>
-            <div className="bx bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-2">National Disaster Response Force</h3>
-              <p className="text-xl font-bold text-red-600">011-24363260</p>
-            </div>
-            <div className="bx bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-2">Ambulance</h3>
-              <p className="text-2xl font-bold text-red-600">108</p>
-            </div>
-            <div className="bx bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-2">Fire Emergency</h3>
-              <p className="text-2xl font-bold text-red-600">101</p>
-            </div>
-            <div className="bx bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-2">Police</h3>
-              <p className="text-2xl font-bold text-red-600">100</p>
-            </div>
-            <div className="bx bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-2">Women Helpline</h3>
-              <p className="text-2xl font-bold text-red-600">1091</p>
-            </div>
+          <h1 className="text-6xl md:text-6xl font-bold text-white mb-3 leading-tight">
+            Disaster <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Response Guide</span>
+          </h1>
+          <div className="flex items-center justify-center gap-6 text-lg md:text-md text-slate-300 font-semibold flex-wrap">
+            <span className="flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-full border border-slate-700">
+              <AlertTriangle className="w-5 h-5 text-cyan-400" />
+              Prediction
+            </span>
+            <span className="text-slate-600">•</span>
+            <span className="flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-full border border-slate-700">
+              <Shield className="w-5 h-5 text-purple-400" />
+              Preparation
+            </span>
+            <span className="text-slate-600">•</span>
+            <span className="flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-full border border-slate-700">
+              <Users className="w-5 h-5 text-pink-400" />
+              Response
+            </span>
           </div>
         </div>
 
-        {/* Disaster Categories */}
-        <div className=" grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {/* Floods */}
-          <div className="bx bg-blue-50 rounded-xl p-6 border border-blue-200 shadow-md">
-            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mb-4">
-              <Waves className="w-6 h-6 text-blue-600" />
-              Floods
+        {/* Emergency Contacts */}
+        <div className="relative rounded-2xl overflow-hidden p-8 mb-12 border border-slate-700/50">
+          <div className="absolute inset-0 bg-gradient-to-br from-red-600/10 via-pink-600/5 to-slate-900/0"></div>
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-red-600/20 rounded-full blur-3xl"></div>
+
+          <div className="relative z-10">
+            <h2 className="text-3xl font-bold text-white flex items-center gap-3 mb-8">
+              <Phone className="w-8 h-8 text-red-400" />
+              Emergency Contacts
             </h2>
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { title: 'National Emergency', number: '112', priority: true },
+                { title: 'NDRF Helpline', number: '011-24363260', priority: false },
+                { title: 'Ambulance', number: '108', priority: true },
+                { title: 'Fire Department', number: '101', priority: true },
+                { title: 'Police', number: '100', priority: true },
+                { title: 'Women Safety', number: '1091', priority: false }
+              ].map((contact, idx) => (
+                <div
+                  key={idx}
+                  className={`rounded-xl p-6 bg-slate-800/50 backdrop-blur-xl border transition-all hover:shadow-lg hover:shadow-red-500/20 ${contact.priority ? 'border-red-500/50 hover:border-red-500' : 'border-slate-700/50 hover:border-purple-500/50'
+                    }`}
+                >
+                  <p className="text-slate-400 text-sm mb-2">{contact.title}</p>
+                  <p className={`font-bold text-3xl ${contact.priority ? 'text-red-400' : 'text-purple-400'}`}>
+                    {contact.number}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Critical Alert Banner */}
+        <div className="relative rounded-2xl overflow-hidden p-6 mb-12 border border-yellow-500/30 bg-gradient-to-r from-yellow-500/10 to-orange-500/10">
+          <div className="flex items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <AlertCircle className="w-8 h-8 text-yellow-400 flex-shrink-0" />
               <div>
-                <h3 className="text-lg font-semibold text-blue-700 mb-2">Alert Signs</h3>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
-                  <li>Continuous heavy rainfall for more than 24 hours</li>
-                  <li>Rising water levels in nearby rivers and dams</li>
-                  <li>IMD warnings for specific regions</li>
-                  <li>Unusual backing up of drains or sewers</li>
-                </ul>
+                <h3 className="text-lg font-bold text-white">Emergency Situation?</h3>
+                <p className="text-slate-300 text-sm">Call 112 immediately or contact nearest authority</p>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-blue-700 mb-2">Safety Measures</h3>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
-                  <li>Move to higher ground immediately</li>
-                  <li>Avoid walking or driving through flood waters</li>
-                  <li>Disconnect electrical appliances</li>
-                  <li>Keep emergency kit with drinking water, non-perishable food, medicines</li>
-                  <li>Follow evacuation orders from local authorities</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-blue-700 mb-2">Prone Areas</h3>
-                <p className="text-gray-800">Assam, Bihar, Uttarakhand, West Bengal, Odisha, Kerala, Maharashtra (coastal districts), Gujarat (Saurashtra)</p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-blue-700 mb-2">Regional Helplines</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <div className="bg-gray-100 rounded-lg p-2 shadow-sm">
-                    <p className="text-gray-800">Bihar SDRF: 0612-2294204</p>
+            </div>
+            <button className="px-6 py-3 rounded-lg bg-gradient-to-r from-red-600 to-pink-600 text-white font-semibold hover:shadow-lg hover:shadow-red-500/50 transition-all flex items-center gap-2 flex-shrink-0">
+              <Download className="w-4 h-4" />
+              Emergency Guide
+            </button>
+          </div>
+        </div>
+
+        {/* Disaster Types */}
+        <div className="space-y-8 mb-12">
+          {/* Floods */}
+          <div className={`group relative rounded-2xl overflow-hidden transition-all ${expandedSections.floods ? 'ring-2 ring-cyan-500/50' : ''
+            }`}>
+            <div className="bg-gradient-to-br from-slate-800 to-slate-900 backdrop-blur-xl border border-slate-700/50 p-8">
+              <button
+                onClick={() => toggleSection('floods')}
+                className="w-full text-left"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center">
+                      <Waves className="w-7 h-7 text-cyan-400" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-white">Floods</h2>
                   </div>
-                  <div className="bg-gray-100 rounded-lg p-2 shadow-sm">
-                    <p className="text-gray-800">Assam SDRF: 0361-2237011</p>
-                  </div>
-                  <div className="bg-gray-100 rounded-lg p-2 shadow-sm">
-                    <p className="text-gray-800">Kerala SDMA: 0471-2331345</p>
+                  <div className="text-slate-400 hover:text-cyan-400 transition-colors">
+                    {expandedSections.floods ? <ChevronUp className="w-6 h-6" /> : <ChevronDown className="w-6 h-6" />}
                   </div>
                 </div>
-              </div>
+              </button>
+
+              {!expandedSections.floods && (
+                <p className="text-slate-400 mt-4">Continuous heavy rainfall, rising water levels, IMD warnings</p>
+              )}
+
+              {expandedSections.floods && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-cyan-300 mb-4 flex items-center gap-2">
+                      <AlertTriangle className="w-5 h-5" />
+                      Alert Signs
+                    </h3>
+                    <ul className="space-y-3 text-slate-300 text-sm">
+                      <li className="flex gap-2"><span className="text-cyan-400 flex-shrink-0">•</span><span>Heavy rainfall for 24+ hours</span></li>
+                      <li className="flex gap-2"><span className="text-cyan-400 flex-shrink-0">•</span><span>Rising water levels in rivers and dams</span></li>
+                      <li className="flex gap-2"><span className="text-cyan-400 flex-shrink-0">•</span><span>IMD warnings for specific regions</span></li>
+                      <li className="flex gap-2"><span className="text-cyan-400 flex-shrink-0">•</span><span>Backing up of drains or sewers</span></li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-cyan-300 mb-4 flex items-center gap-2">
+                      <Shield className="w-5 h-5" />
+                      Safety Measures
+                    </h3>
+                    <ul className="space-y-3 text-slate-300 text-sm">
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Move to higher ground immediately</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Avoid walking through flood waters</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Disconnect electrical appliances</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Keep emergency kit ready</span></li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-cyan-300 mb-4 flex items-center gap-2">
+                      <MapPin className="w-5 h-5" />
+                      Prone Areas
+                    </h3>
+                    <p className="text-slate-300 text-sm">Assam, Bihar, Uttarakhand, West Bengal, Odisha, Kerala, Maharashtra, Gujarat</p>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-cyan-300 mb-4">Regional Helplines</h3>
+                    <div className="space-y-2 text-sm">
+                      <div><p className="text-slate-400">Bihar SDRF</p><p className="text-cyan-400 font-bold">0612-2294204</p></div>
+                      <div><p className="text-slate-400">Assam SDRF</p><p className="text-cyan-400 font-bold">0361-2237011</p></div>
+                      <div><p className="text-slate-400">Kerala SDMA</p><p className="text-cyan-400 font-bold">0471-2331345</p></div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Heatwaves */}
-          <div className="bx bg-orange-50 rounded-xl p-6 border border-orange-200 shadow-md">
-            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mb-4">
-              <Thermometer className="w-6 h-6 text-orange-600" />
-              Heatwaves
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-semibold text-orange-700 mb-2">Alert Signs</h3>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
-                  <li>Temperatures exceeding 40°C (104°F) in plains and 30°C (86°F) in hilly regions</li>
-                  <li>IMD "Red Alert" warnings</li>
-                  <li>Prolonged high temperatures for more than 4-5 days</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-orange-700 mb-2">Safety Measures</h3>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
-                  <li>Stay indoors during peak hours (11am to 3pm)</li>
-                  <li>Stay hydrated with water and ORS solutions</li>
-                  <li>Wear lightweight, light-colored, loose cotton clothes</li>
-                  <li>Cover head when outdoors with hat/umbrella</li>
-                  <li>Check on elderly, pregnant women and children regularly</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-orange-700 mb-2">Prone Areas</h3>
-                <p className="text-gray-800">Rajasthan, Vidarbha, Telangana, Andhra Pradesh, Punjab, Haryana, Delhi, Uttar Pradesh, Bihar, Jharkhand</p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-orange-700 mb-2">Heat Stroke Symptoms</h3>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
-                  <li>High body temperature (above 103°F/39.4°C)</li>
-                  <li>Hot, red, dry skin with no sweating</li>
-                  <li>Rapid, strong pulse; throbbing headache</li>
-                  <li>Dizziness, nausea, confusion or unconsciousness</li>
-                </ul>
-              </div>
+          <div className={`group relative rounded-2xl overflow-hidden transition-all ${expandedSections.heatwaves ? 'ring-2 ring-orange-500/50' : ''
+            }`}>
+            <div className="bg-gradient-to-br from-slate-800 to-slate-900 backdrop-blur-xl border border-slate-700/50 p-8">
+              <button
+                onClick={() => toggleSection('heatwaves')}
+                className="w-full text-left"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center">
+                      <Thermometer className="w-7 h-7 text-orange-400" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-white">Heatwaves</h2>
+                  </div>
+                  <div className="text-slate-400 hover:text-orange-400 transition-colors">
+                    {expandedSections.heatwaves ? <ChevronUp className="w-6 h-6" /> : <ChevronDown className="w-6 h-6" />}
+                  </div>
+                </div>
+              </button>
+
+              {!expandedSections.heatwaves && (
+                <p className="text-slate-400 mt-4">Temperatures exceeding 40°C, IMD Red Alert warnings, prolonged high heat</p>
+              )}
+
+              {expandedSections.heatwaves && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-orange-300 mb-4 flex items-center gap-2">
+                      <AlertTriangle className="w-5 h-5" />
+                      Alert Signs
+                    </h3>
+                    <ul className="space-y-3 text-slate-300 text-sm">
+                      <li className="flex gap-2"><span className="text-orange-400 flex-shrink-0">•</span><span>Temps exceeding 40°C in plains</span></li>
+                      <li className="flex gap-2"><span className="text-orange-400 flex-shrink-0">•</span><span>IMD Red Alert warnings</span></li>
+                      <li className="flex gap-2"><span className="text-orange-400 flex-shrink-0">•</span><span>Prolonged heat for 4-5 days</span></li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-orange-300 mb-4 flex items-center gap-2">
+                      <Shield className="w-5 h-5" />
+                      Safety Measures
+                    </h3>
+                    <ul className="space-y-3 text-slate-300 text-sm">
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Stay indoors during 11am-3pm</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Stay hydrated with water and ORS</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Wear light-colored clothes</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Cover head outdoors</span></li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-orange-300 mb-4 flex items-center gap-2">
+                      <MapPin className="w-5 h-5" />
+                      Prone Areas
+                    </h3>
+                    <p className="text-slate-300 text-sm">Rajasthan, Vidarbha, Telangana, Andhra Pradesh, Punjab, Haryana, Delhi</p>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-red-500/10 border border-red-500/30">
+                    <h3 className="text-lg font-bold text-red-300 mb-4">Heat Stroke Symptoms</h3>
+                    <ul className="space-y-2 text-slate-300 text-sm">
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">⚠</span><span>Body temp above 103°F</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">⚠</span><span>Hot, red, dry skin</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">⚠</span><span>Rapid pulse, throbbing headache</span></li>
+                    </ul>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Earthquakes */}
-          <div className="bx bg-gray-100 rounded-xl p-6 border border-gray-300 shadow-md">
-            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mb-4">
-              <MapPin className="w-6 h-6 text-gray-600" />
-              Earthquakes
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">During Earthquake</h3>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
-                  <li>Drop, Cover, Hold: Get under sturdy furniture</li>
-                  <li>Stay away from windows, glass, and exterior walls</li>
-                  <li>If outdoors, move to open areas away from buildings</li>
-                  <li>If in vehicle, pull over away from buildings and utility poles</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">After Earthquake</h3>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
-                  <li>Check for injuries and provide first aid</li>
-                  <li>Check for structural damage to buildings</li>
-                  <li>Turn off gas, water, and electricity if damaged</li>
-                  <li>Be prepared for aftershocks</li>
-                  <li>Listen to radio for emergency information</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Seismic Zones</h3>
-                <p className="text-gray-800"><strong>High Risk (Zone 5):</strong> Entire Himalayan belt, parts of Kashmir, Western and Central Himachal Pradesh, Uttarakhand, Rann of Kutch, parts of North Bihar, Northeast India</p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Contacts</h3>
-                <p className="text-gray-800">National Centre for Seismology: 011-24611842</p>
-                <p className="text-gray-800">Geological Survey of India (GSI): 033-22861693</p>
-              </div>
+          <div className={`group relative rounded-2xl overflow-hidden transition-all ${expandedSections.earthquakes ? 'ring-2 ring-purple-500/50' : ''
+            }`}>
+            <div className="bg-gradient-to-br from-slate-800 to-slate-900 backdrop-blur-xl border border-slate-700/50 p-8">
+              <button
+                onClick={() => toggleSection('earthquakes')}
+                className="w-full text-left"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20 flex items-center justify-center">
+                      <AlertTriangle className="w-7 h-7 text-purple-400" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-white">Earthquakes</h2>
+                  </div>
+                  <div className="text-slate-400 hover:text-purple-400 transition-colors">
+                    {expandedSections.earthquakes ? <ChevronUp className="w-6 h-6" /> : <ChevronDown className="w-6 h-6" />}
+                  </div>
+                </div>
+              </button>
+
+              {!expandedSections.earthquakes && (
+                <p className="text-slate-400 mt-4">Drop, Cover, Hold - Get under sturdy furniture immediately</p>
+              )}
+
+              {expandedSections.earthquakes && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-purple-300 mb-4">During Earthquake</h3>
+                    <ul className="space-y-3 text-slate-300 text-sm">
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">•</span><span><strong>Drop, Cover, Hold:</strong> Under sturdy furniture</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">•</span><span>Stay away from windows</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">•</span><span>If outdoors, move to open areas</span></li>
+                      <li className="flex gap-2"><span className="text-purple-400 flex-shrink-0">•</span><span>If in vehicle, pull over safely</span></li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-purple-300 mb-4">After Earthquake</h3>
+                    <ul className="space-y-3 text-slate-300 text-sm">
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Check for injuries</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Check for structural damage</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Turn off utilities if damaged</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Be prepared for aftershocks</span></li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-purple-300 mb-4 flex items-center gap-2">
+                      <MapPin className="w-5 h-5" />
+                      High Risk Zones
+                    </h3>
+                    <p className="text-slate-300 text-sm">Himalayan belt, Kashmir, Himachal Pradesh, Uttarakhand, North Bihar, Northeast India</p>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-purple-300 mb-4">Emergency Contacts</h3>
+                    <div className="space-y-2 text-sm">
+                      <div><p className="text-slate-400">Seismology Centre</p><p className="text-purple-400 font-bold">011-24611842</p></div>
+                      <div><p className="text-slate-400">Geological Survey</p><p className="text-purple-400 font-bold">033-22861693</p></div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Wildfires */}
-          <div className=" bx bg-red-50 rounded-xl p-6 border border-red-200 shadow-md">
-            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mb-4">
-              <Flame className="w-6 h-6 text-red-600" />
-              Wildfires
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-semibold text-red-700 mb-2">Alert Signs</h3>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
-                  <li>Smoke or fire visible in forest areas</li>
-                  <li>Forest Department warnings during dry seasons</li>
-                  <li>Extended dry period with high temperatures</li>
-                  <li>Strong winds in fire-prone areas</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-red-700 mb-2">Safety Measures</h3>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
-                  <li>If near a wildfire, evacuate immediately</li>
-                  <li>Cover nose and mouth with wet cloth</li>
-                  <li>Follow evacuation routes away from fire direction</li>
-                  <li>If trapped, find water body or cleared area</li>
-                  <li>Report fires immediately to local forest department</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-red-700 mb-2">Prone Areas</h3>
-                <p className="text-gray-800">Uttarakhand, Himachal Pradesh, Jammu & Kashmir, Northeast states, Forest areas of Maharashtra, Odisha, Chhattisgarh, Madhya Pradesh</p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-red-700 mb-2">Regional Contacts</h3>
-                <p className="text-gray-800">Forest Survey of India: 0135-2752872</p>
-                <p className="text-gray-800">Uttarakhand Forest Fire Helpline: 1800-180-4111</p>
-              </div>
+          <div className={`group relative rounded-2xl overflow-hidden transition-all ${expandedSections.wildfires ? 'ring-2 ring-red-500/50' : ''
+            }`}>
+            <div className="bg-gradient-to-br from-slate-800 to-slate-900 backdrop-blur-xl border border-slate-700/50 p-8">
+              <button
+                onClick={() => toggleSection('wildfires')}
+                className="w-full text-left"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-red-500/20 to-orange-500/20 flex items-center justify-center">
+                      <Flame className="w-7 h-7 text-red-400" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-white">Wildfires</h2>
+                  </div>
+                  <div className="text-slate-400 hover:text-red-400 transition-colors">
+                    {expandedSections.wildfires ? <ChevronUp className="w-6 h-6" /> : <ChevronDown className="w-6 h-6" />}
+                  </div>
+                </div>
+              </button>
+
+              {!expandedSections.wildfires && (
+                <p className="text-slate-400 mt-4">Smoke, fires in forest areas, Forest Dept warnings, extended dry periods</p>
+              )}
+
+              {expandedSections.wildfires && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-red-300 mb-4 flex items-center gap-2">
+                      <AlertTriangle className="w-5 h-5" />
+                      Alert Signs
+                    </h3>
+                    <ul className="space-y-3 text-slate-300 text-sm">
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">•</span><span>Smoke or fire in forests</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">•</span><span>Forest Dept warnings</span></li>
+                      <li className="flex gap-2"><span className="text-red-400 flex-shrink-0">•</span><span>Extended dry periods</span></li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-red-300 mb-4 flex items-center gap-2">
+                      <Shield className="w-5 h-5" />
+                      Safety Measures
+                    </h3>
+                    <ul className="space-y-3 text-slate-300 text-sm">
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Evacuate immediately</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Cover nose with wet cloth</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Follow evacuation routes</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Report to forest dept</span></li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-red-300 mb-4">Prone Areas</h3>
+                    <p className="text-slate-300 text-sm">Uttarakhand, Himachal Pradesh, J&K, Northeast states, Maharashtra, Odisha, Chhattisgarh</p>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-red-300 mb-4">Regional Contacts</h3>
+                    <div className="space-y-2 text-sm">
+                      <div><p className="text-slate-400">Forest Survey of India</p><p className="text-red-400 font-bold">0135-2752872</p></div>
+                      <div><p className="text-slate-400">Uttarakhand Helpline</p><p className="text-red-400 font-bold">1800-180-4111</p></div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Cyclones */}
-          <div className="bx bg-teal-50 rounded-xl p-6 border border-teal-200 shadow-md">
-            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mb-4">
-              <Wind className="w-6 h-6 text-teal-600" />
-              Cyclones
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-semibold text-teal-700 mb-2">Alert Signs</h3>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
-                  <li>IMD cyclone warnings and alerts</li>
-                  <li>Unusually large ocean waves</li>
-                  <li>Rapid changes in wind direction and speed</li>
-                  <li>Government evacuation notices</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-teal-700 mb-2">Safety Measures</h3>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
-                  <li>Evacuate when ordered by authorities</li>
-                  <li>Move to designated cyclone shelters</li>
-                  <li>Store drinking water and non-perishable food</li>
-                  <li>Keep emergency kit ready with medications</li>
-                  <li>Secure loose items outside homes</li>
-                  <li>Stay indoors during cyclone</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-teal-700 mb-2">Prone Areas</h3>
-                <p className="text-gray-800">Eastern coast (Odisha, West Bengal, Andhra Pradesh, Tamil Nadu), Western coast (Gujarat, Maharashtra, Goa, Karnataka, Kerala)</p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-teal-700 mb-2">Contacts</h3>
-                <p className="text-gray-800">IMD Cyclone Warning: 1800-220-161</p>
-                <p className="text-gray-800">Odisha Disaster Helpline: 1077/1070</p>
-                <p className="text-gray-800">West Bengal Disaster Management: 1070</p>
-              </div>
+          <div className={`group relative rounded-2xl overflow-hidden transition-all ${expandedSections.cyclones ? 'ring-2 ring-cyan-500/50' : ''
+            }`}>
+            <div className="bg-gradient-to-br from-slate-800 to-slate-900 backdrop-blur-xl border border-slate-700/50 p-8">
+              <button
+                onClick={() => toggleSection('cyclones')}
+                className="w-full text-left"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/20 flex items-center justify-center">
+                      <Wind className="w-7 h-7 text-cyan-400" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-white">Cyclones</h2>
+                  </div>
+                  <div className="text-slate-400 hover:text-cyan-400 transition-colors">
+                    {expandedSections.cyclones ? <ChevronUp className="w-6 h-6" /> : <ChevronDown className="w-6 h-6" />}
+                  </div>
+                </div>
+              </button>
+
+              {!expandedSections.cyclones && (
+                <p className="text-slate-400 mt-4">IMD cyclone warnings, unusual ocean waves, rapid wind changes</p>
+              )}
+
+              {expandedSections.cyclones && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-cyan-300 mb-4 flex items-center gap-2">
+                      <AlertTriangle className="w-5 h-5" />
+                      Alert Signs
+                    </h3>
+                    <ul className="space-y-3 text-slate-300 text-sm">
+                      <li className="flex gap-2"><span className="text-cyan-400 flex-shrink-0">•</span><span>IMD cyclone warnings</span></li>
+                      <li className="flex gap-2"><span className="text-cyan-400 flex-shrink-0">•</span><span>Unusually large ocean waves</span></li>
+                      <li className="flex gap-2"><span className="text-cyan-400 flex-shrink-0">•</span><span>Rapid wind changes</span></li>
+                      <li className="flex gap-2"><span className="text-cyan-400 flex-shrink-0">•</span><span>Government evacuation notices</span></li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-cyan-300 mb-4 flex items-center gap-2">
+                      <Shield className="w-5 h-5" />
+                      Safety Measures
+                    </h3>
+                    <ul className="space-y-3 text-slate-300 text-sm">
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Evacuate when ordered</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Move to cyclone shelters</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Store drinking water and food</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Secure loose items outside</span></li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-cyan-300 mb-4 flex items-center gap-2">
+                      <MapPin className="w-5 h-5" />
+                      Prone Areas
+                    </h3>
+                    <p className="text-slate-300 text-sm">Eastern coast (Odisha, West Bengal, Andhra Pradesh, Tamil Nadu), Western coast (Gujarat, Maharashtra, Goa, Kerala)</p>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-cyan-300 mb-4">Emergency Contacts</h3>
+                    <div className="space-y-2 text-sm">
+                      <div><p className="text-slate-400">IMD Cyclone Warning</p><p className="text-cyan-400 font-bold">1800-220-161</p></div>
+                      <div><p className="text-slate-400">Odisha Disaster Helpline</p><p className="text-cyan-400 font-bold">1077/1070</p></div>
+                      <div><p className="text-slate-400">West Bengal Disaster</p><p className="text-cyan-400 font-bold">1070</p></div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Landslides */}
-          <div className=" bx bg-amber-50 rounded-xl p-6 border border-amber-200 shadow-md">
-            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mb-4">
-              <MapPin className="w-6 h-6 text-amber-600" />
-              Landslides
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-semibold text-amber-700 mb-2">Warning Signs</h3>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
-                  <li>Cracks appearing in ground or slopes</li>
-                  <li>Water seeping from hillsides</li>
-                  <li>Tilting trees, utility poles or walls</li>
-                  <li>Unusual sounds like trees cracking or boulders knocking</li>
-                  <li>Heavy rainfall in hilly regions</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-amber-700 mb-2">Safety Measures</h3>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
-                  <li>Evacuate immediately if signs observed</li>
-                  <li>Move away from path of landslide</li>
-                  <li>Alert neighbors if possible</li>
-                  <li>Watch for flooding which may accompany landslides</li>
-                  <li>Listen for unusual sounds that might indicate moving debris</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-amber-700 mb-2">Prone Areas</h3>
-                <p className="text-gray-800">Himalayan states (Uttarakhand, Himachal Pradesh, Jammu & Kashmir), Northeast states, Western Ghats (Kerala, Karnataka, Tamil Nadu, Goa), Eastern Ghats (parts of Andhra Pradesh)</p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-amber-700 mb-2">Contacts</h3>
-                <p className="text-gray-800">Geological Survey of India (Landslide Division): 0135-2740008</p>
-                <p className="text-gray-800">Himachal Pradesh Disaster Management: 1077</p>
-              </div>
+          <div className={`group relative rounded-2xl overflow-hidden transition-all ${expandedSections.landslides ? 'ring-2 ring-amber-500/50' : ''
+            }`}>
+            <div className="bg-gradient-to-br from-slate-800 to-slate-900 backdrop-blur-xl border border-slate-700/50 p-8">
+              <button
+                onClick={() => toggleSection('landslides')}
+                className="w-full text-left"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/20 to-yellow-500/20 flex items-center justify-center">
+                      <MapPin className="w-7 h-7 text-amber-400" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-white">Landslides</h2>
+                  </div>
+                  <div className="text-slate-400 hover:text-amber-400 transition-colors">
+                    {expandedSections.landslides ? <ChevronUp className="w-6 h-6" /> : <ChevronDown className="w-6 h-6" />}
+                  </div>
+                </div>
+              </button>
+
+              {!expandedSections.landslides && (
+                <p className="text-slate-400 mt-4">Ground cracks, water seeping from hills, tilting trees, unusual debris sounds</p>
+              )}
+
+              {expandedSections.landslides && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-amber-300 mb-4 flex items-center gap-2">
+                      <AlertTriangle className="w-5 h-5" />
+                      Warning Signs
+                    </h3>
+                    <ul className="space-y-3 text-slate-300 text-sm">
+                      <li className="flex gap-2"><span className="text-amber-400 flex-shrink-0">•</span><span>Cracks in ground or slopes</span></li>
+                      <li className="flex gap-2"><span className="text-amber-400 flex-shrink-0">•</span><span>Water seeping from hillsides</span></li>
+                      <li className="flex gap-2"><span className="text-amber-400 flex-shrink-0">•</span><span>Tilting trees, poles, walls</span></li>
+                      <li className="flex gap-2"><span className="text-amber-400 flex-shrink-0">•</span><span>Sounds from moving debris</span></li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-amber-300 mb-4 flex items-center gap-2">
+                      <Shield className="w-5 h-5" />
+                      Safety Measures
+                    </h3>
+                    <ul className="space-y-3 text-slate-300 text-sm">
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Evacuate immediately</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Move away from landslide path</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Alert neighbors if possible</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Watch for flooding</span></li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-amber-300 mb-4">Prone Areas</h3>
+                    <p className="text-slate-300 text-sm">Himalayan states (Uttarakhand, Himachal Pradesh, J&K), Northeast states, Western Ghats (Kerala, Karnataka, Tamil Nadu)</p>
+                  </div>
+
+                  <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-amber-300 mb-4">Emergency Contacts</h3>
+                    <div className="space-y-2 text-sm">
+                      <div><p className="text-slate-400">Geological Survey of India</p><p className="text-amber-400 font-bold">0135-2740008</p></div>
+                      <div><p className="text-slate-400">Himachal Disaster Management</p><p className="text-amber-400 font-bold">1077</p></div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
 
         {/* Emergency Preparedness Kit */}
-        <div className=" bx bg-green-50 rounded-xl p-6 mb-8 border border-green-200 shadow-md">
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mb-4">
-            <Shield className="w-6 h-6 text-green-600" />
-            Emergency Preparedness Kit
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bx g-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="font-semibold text-green-700 mb-2">Essential Supplies</h3>
-              <ul className="list-disc list-inside text-gray-800 space-y-1">
-                <li>Drinking water (3 days supply, 4L per person per day)</li>
-                <li>Non-perishable food items</li>
-                <li>First aid kit with essential medications</li>
-                <li>Flashlight with extra batteries</li>
-                <li>Battery-powered or hand-crank radio</li>
-                <li>Whistle to signal for help</li>
-                <li>Dust mask, plastic sheeting and duct tape</li>
-                <li>Moist towelettes and garbage bags</li>
-                <li>Cell phone with chargers and backup battery</li>
-              </ul>
-            </div>
-            <div className="bx bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="font-semibold text-green-700 mb-2">Documents</h3>
-              <ul className="list-disc list-inside text-gray-800 space-y-1">
-                <li>Identification documents (Aadhaar, PAN, passport)</li>
-                <li>Insurance policies</li>
-                <li>Bank account information</li>
-                <li>Cash or traveler's checks</li>
-                <li>Emergency contact list</li>
-                <li>Map of the area</li>
-                <li>Medical prescriptions and records</li>
-                <li>Family photos for identification if separated</li>
-              </ul>
-            </div>
-            <div className="bx bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="font-semibold text-green-700 mb-2">Special Needs</h3>
-              <ul className="list-disc list-inside text-gray-800 space-y-1">
-                <li>Prescription medicines (7-day supply)</li>
-                <li>Infant formula, diapers, bottles</li>
-                <li>Pet food and extra water for pets</li>
-                <li>Glasses, contact lenses and solutions</li>
-                <li>Activities for children</li>
-                <li>Feminine supplies and personal hygiene items</li>
-                <li>Assistive devices (hearing aids, mobility aids)</li>
-              </ul>
+        <div className="relative rounded-2xl overflow-hidden p-8 mb-12 border border-slate-700/50">
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/10 via-green-600/5 to-slate-900/0"></div>
+
+          <div className="relative z-10">
+            <h2 className="text-3xl font-bold text-white flex items-center gap-3 mb-8">
+              <Shield className="w-8 h-8 text-emerald-400" />
+              Emergency Preparedness Kit
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                <h3 className="text-lg font-bold text-emerald-300 mb-4">Essential Supplies</h3>
+                <ul className="space-y-2 text-slate-300 text-sm">
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Drinking water (3-day supply)</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Non-perishable food items</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>First aid kit with medicines</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Flashlight with batteries</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Battery-powered radio</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Whistle for signaling</span></li>
+                </ul>
+              </div>
+
+              <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                <h3 className="text-lg font-bold text-emerald-300 mb-4">Important Documents</h3>
+                <ul className="space-y-2 text-slate-300 text-sm">
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>ID documents (Aadhaar, PAN)</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Insurance policies</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Bank account information</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Cash or travelers checks</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Emergency contact list</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Medical prescriptions</span></li>
+                </ul>
+              </div>
+
+              <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                <h3 className="text-lg font-bold text-emerald-300 mb-4">Special Needs</h3>
+                <ul className="space-y-2 text-slate-300 text-sm">
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Prescription medicines</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Infant formula, diapers</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Pet food and water</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Glasses, contact lenses</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Activities for children</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-400 flex-shrink-0">✓</span><span>Assistive devices</span></li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Disaster Management Apps */}
-        <div className="bx bg-purple-50 rounded-xl p-6 mb-8 border border-purple-200 shadow-md">
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mb-4">
-            <AlertCircle className="w-6 h-6 text-purple-600" />
-            Official Disaster Management Apps & Resources
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="bx bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="font-semibold text-purple-700 mb-2">NDMA App</h3>
-              <p className="text-gray-800">Official National Disaster Management Authority app with early warnings and safety tips</p>
-            </div>
-            <div className=" bx bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="font-semibold text-purple-700 mb-2">Meghdoot</h3>
-              <p className="text-gray-800">Weather forecasting app by IMD providing weather warnings</p>
-            </div>
-            <div className=" bx bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="font-semibold text-purple-700 mb-2">Damini</h3>
-              <p className="text-gray-800">Lightning alert app providing real-time thunderstorm warnings</p>
-            </div>
-            <div className="bx bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="font-semibold text-purple-700 mb-2">SACHET</h3>
-              <p className="text-gray-800">Early Warning System for cyclones and tsunami alerts</p>
-            </div>
-            <div className="bx bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="font-semibold text-purple-700 mb-2">IFLOWS</h3>
-              <p className="text-gray-800">Integrated Flood Warning System for urban flood alerts</p>
-            </div>
-            <div className="bx bg-gray-100 rounded-lg p-4 shadow-sm">
-              <h3 className="font-semibold text-purple-700 mb-2">Official Websites</h3>
-              <ul className="list-disc list-inside text-gray-800 space-y-1">
-                <li>NDMA: ndma.gov.in</li>
-                <li>IMD: mausam.imd.gov.in</li>
-                <li>Central Water Commission: cwc.gov.in</li>
-              </ul>
+        <div className="relative rounded-2xl overflow-hidden p-8 mb-12 border border-slate-700/50">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-pink-600/5 to-slate-900/0"></div>
+
+          <div className="relative z-10">
+            <h2 className="text-3xl font-bold text-white flex items-center gap-3 mb-8">
+              <Sparkles className="w-8 h-8 text-purple-400" />
+              Disaster Management Resources
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { name: 'NDMA App', desc: 'Official National Disaster Management Authority app with early warnings' },
+                { name: 'Meghdoot', desc: 'Weather forecasting by IMD providing weather warnings' },
+                { name: 'Damini', desc: 'Lightning alert app with real-time thunderstorm warnings' },
+                { name: 'SACHET', desc: 'Early Warning System for cyclones and tsunami alerts' },
+                { name: 'IFLOWS', desc: 'Integrated Flood Warning System for urban flood alerts' },
+                { name: 'Official Websites', desc: 'NDMA: ndma.gov.in | IMD: mausam.imd.gov.in' }
+              ].map((app, idx) => (
+                <div key={idx} className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50 hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/10">
+                  <h3 className="font-bold text-purple-300 mb-2 text-lg">{app.name}</h3>
+                  <p className="text-slate-300 text-sm">{app.desc}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Important Training Resources */}
-        <div className="bx bg-blue-50 rounded-xl p-6 border border-blue-200 shadow-md">
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mb-4">
-            <Shield className="w-6 h-6 text-blue-600" />
-            Training & Preparation Resources
-          </h2>
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-lg font-semibold text-blue-700 mb-2">First Aid Training</h3>
-              <p className="text-gray-800">Indian Red Cross Society: www.indianredcross.org</p>
-              <p className="text-gray-800">St. John Ambulance India: stjohnambulanceindia.org</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-blue-700 mb-2">Community Preparedness Programs</h3>
-              <p className="text-gray-800">Aapda Mitra Scheme - Volunteer training for disaster response</p>
-              <p className="text-gray-800">Contact local District Disaster Management Authority</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-blue-700 mb-2">Online Resources</h3>
-              <p className="text-gray-800">NDMA Training Modules: ndma.gov.in/training</p>
-              <p className="text-gray-800">NIDM E-Learning: nidm.gov.in/online_course.asp</p>
+        {/* Training & Resources */}
+        <div className="relative rounded-2xl overflow-hidden p-8 border border-slate-700/50">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-cyan-600/5 to-slate-900/0"></div>
+
+          <div className="relative z-10">
+            <h2 className="text-3xl font-bold text-white flex items-center gap-3 mb-8">
+              <Book className="w-8 h-8 text-cyan-400" />
+              Training & Preparation Resources
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                <h3 className="text-lg font-bold text-cyan-300 mb-3">First Aid Training</h3>
+                <p className="text-slate-300 text-sm mb-2">Indian Red Cross Society: www.indianredcross.org</p>
+                <p className="text-slate-300 text-sm">St. John Ambulance India: stjohnambulanceindia.org</p>
+              </div>
+
+              <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                <h3 className="text-lg font-bold text-cyan-300 mb-3">Community Preparedness</h3>
+                <p className="text-slate-300 text-sm mb-2">Aapda Mitra Scheme - Volunteer training for disaster response</p>
+                <p className="text-slate-300 text-sm">Contact local District Disaster Management Authority</p>
+              </div>
+
+              <div className="rounded-xl p-6 bg-slate-800/50 border border-slate-700/50">
+                <h3 className="text-lg font-bold text-cyan-300 mb-3">Online Resources</h3>
+                <p className="text-slate-300 text-sm mb-2">NDMA Training: ndma.gov.in/training</p>
+                <p className="text-slate-300 text-sm">NIDM E-Learning: nidm.gov.in/online_course.asp</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
-};
+  );
+}

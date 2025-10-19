@@ -1,9 +1,21 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Droplet, CloudRain, History, AlertCircle, Info } from 'lucide-react';
+import { ArrowLeft, Droplet, History, Info, Globe, AlertTriangle, MapPin, Clock, Signal, Loader2, ArrowRight } from 'lucide-react';
 import { predictFlood } from '../models/flood';
 import type { ApiError } from '../models/types';
 // import "./new.css"
+const countries = [
+    "United States",
+    "Canada",
+    "United Kingdom",
+    "Australia",
+    "Japan",
+    "Germany",
+    "France",
+    "India",
+    "Brazil",
+    "South Africa",
+].sort();
 
 const soilTypes = [
     { name: "Sandy Soil", range: [5, 10] },
@@ -15,6 +27,7 @@ const soilTypes = [
 
 export default function FloodPrediction() {
     const navigate = useNavigate();
+    const [selectedCountry, setSelectedCountry] = useState('');
     const [city, setCity] = useState('');
     const [dayOption, setDayOption] = useState('');
     const [soilType, setSoilType] = useState('');
@@ -84,183 +97,229 @@ export default function FloodPrediction() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-blue-900 via-[#1E3A8A] to-blue-900">
-            <div className="container mx-auto px-6 py-8">
+        <div className="min-h-screen bg-slate-950">
+            <div className="container mx-auto px-6 py-7">
                 <Link
                     to="/"
-                    className="inline-flex items-center text-white hover:text-[#FACC15] transition-colors mb-8"
+                    className="inline-flex items-center text-slate-400 hover:text-purple-300 transition-colors mb-2 group"
                 >
-                    <ArrowLeft className="w-5 h-5 mr-2" />
+                    <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
                     Back to Home
                 </Link>
 
-                <div className="max-w-[30rem] mx-auto bg-white rounded-xl shadow-xl p-6">
-                    <h1 className="text-2xl font-bold text-blue-900 mb-2">Flood Risk Assessment</h1>
-                    <p className="text-gray-600 mb-4">
-                        Enter location and environmental data for AI-powered flood risk prediction
-                    </p>
+                <div className="max-w-2xl mx-auto">
+                    {/* Header */}
+                    <div className="text-center mb-3">
+                        <div className="flex justify-center mb-1">
+                            <div className="w-12 h-12 rounded-3xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                                <Globe className="w-8 h-8 text-white" />
+                            </div>
+                        </div>
+                        <h1 className="text-5xl font-bold text-white m-2">Flood Risk Assessment</h1>
+                        <p className="text-slate-400 text-lg">
+                            Enter your location to receive AI-powered disaster risk assessment
+                        </p>
+                    </div>
 
-                    <div className="mb-6 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded whitespace-nowrap">
-                        <div className="flex items-center">
-                            <AlertCircle className="w-5 h-5 mr-2 flex-shrink-0" />
-                            <span className="whitespace-nowrap"><strong>Note:</strong> This service is currently only available for India.</span>
+                    {/* Form Card */}
+                    <div className="bg-slate-800 relative rounded-2xl overflow-hidden border border-slate-700/50 shadow-2xl px-5">
+                        <div className="relative z-10 p-8 md:p-12 bg-slate-800">
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                {error && (
+                                    <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-start gap-3">
+                                        <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                                        <p className="text-red-300 text-sm">{error.error}</p>
+                                    </div>
+                                )}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {/* Country Select */}
+                                    <div>
+                                        <label htmlFor="country" className="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                                            <Globe className="w-4 h-4 text-cyan-400" />
+                                            Select Country
+                                        </label>
+                                        <select
+                                            id="country"
+                                            value={selectedCountry}
+                                            onChange={(e) => {
+                                                setSelectedCountry(e.target.value);
+                                                setError(null);
+                                            }}
+                                            required
+                                            className="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700/50 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 text-white placeholder-slate-500 transition-all appearance-none cursor-pointer"
+                                        >
+                                            <option value="" className="bg-slate-900 text-slate-400">Choose a country...</option>
+                                            {countries.map(country => (
+                                                <option key={country} value={country} className="bg-slate-900 text-white">{country}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    {/* City Input */}
+                                    <div>
+                                        <label htmlFor="city" className="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                                            <MapPin className="w-4 h-4 text-cyan-400" />
+                                            Enter City
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="city"
+                                            value={city}
+                                            onChange={(e) => {
+                                                setCity(e.target.value);
+                                                setError(null);
+                                            }}
+                                            required
+                                            placeholder="e.g., New York, Mumbai, Sydney"
+                                            className="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700/50 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 text-white placeholder-slate-500 transition-all"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="dayOption" className="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                                            <Clock className="w-4 h-4 text-cyan-400" />
+                                            Prediction Period
+                                        </label>
+                                        <select
+                                            id="dayOption"
+                                            value={dayOption}
+                                            onChange={(e) => setDayOption(e.target.value)}
+                                            required
+                                            className="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700/50 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 text-white placeholder-slate-500 transition-all appearance-none cursor-pointer"
+                                        >
+                                            <option value="" className="bg-slate-900 text-slate-400">Select period</option>
+                                            <option value="3" className="bg-slate-900 text-slate-400">Next 3 days (Today)</option>
+                                            <option value="4" className="bg-slate-900 text-slate-400">Next 4 days (Tomorrow)</option>
+                                            <option value="5" className="bg-slate-900 text-slate-400">Next 5 days (Day after tomorrow)</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="soilType" className="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                                            <Droplet className="w-4 h-4 text-cyan-400" />
+                                            Soil Type
+
+                                        </label>
+                                        <select
+                                            id="soilType"
+                                            value={soilType}
+                                            onChange={(e) => setSoilType(e.target.value)}
+                                            required
+                                            className="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700/50 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 text-white placeholder-slate-500 transition-all appearance-none cursor-pointer">
+                                            <option value="">Select Soil Type</option>
+                                            {soilTypes.map(soil => (
+                                                <option key={soil.name} value={soil.name} className="bg-slate-900 text-slate-400">
+                                                    {soil.name} ({soil.range[0]}%-{soil.range[1]}%)
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <label htmlFor="reservoirLevel" className="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                                                <Signal className="w-4 h-4 text-cyan-400" />
+                                                Reservoir Level (%)
+                                            </label>
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowReservoirPopup(true)}
+                                                className="text-blue-600 font-size hover:text-blue-800 focus:outline-none justbtn"
+                                                aria-label="Show reservoir level reference"
+                                            >
+                                                <Info className="w-5 h-5 text-cyan-400" />
+                                            </button>
+                                        </div>
+                                        <input
+                                            type="number"
+                                            id="reservoirLevel"
+                                            value={reservoirLevel}
+                                            onChange={(e) => setReservoirLevel(e.target.value)}
+                                            min="0"
+                                            max="100"
+                                            step="0.1"
+                                            className="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700/50 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 text-white placeholder-slate-500 transition-all"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="previousFloods" className="block text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
+                                            <History className="w-4 h-4 text-cyan-400" />
+                                            Previous Floods (last month)
+
+                                        </label>
+                                        <select
+                                            id="previousFloods"
+                                            name="previousFloods"
+                                            value={previousFloods}
+                                            onChange={(e) => setPreviousFloods(e.target.value)}
+                                            className="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700/50 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 text-white placeholder-slate-500 transition-all appearance-none cursor-pointer"
+                                            required
+                                        >
+                                            <option value="" className="bg-slate-900 text-slate-400">Select Option</option>
+                                            <option value="yes" className="bg-slate-900 text-slate-400">Yes</option>
+                                            <option value="no" className="bg-slate-900 text-slate-400">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {error && (
+                                    <div className="p-4 bg-red-100 text-red-700 rounded-lg">
+                                        <strong>{error.error}:</strong> {error.message}
+                                    </div>
+                                )}
+
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className={`w-full py-3 px-6 rounded-xl text-white font-semibold flex items-center justify-center gap-2 transition-all ${loading
+                                        ? 'bg-slate-700 cursor-not-allowed'
+                                        : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:shadow-lg hover:shadow-purple-500/50 hover:scale-105'
+                                        }`}
+                                >
+                                    {loading ? (
+                                        <>
+                                            <Loader2 className="w-5 h-5 animate-spin" />
+                                            Analyzing Location...
+                                        </>
+                                    ) : (
+                                        <>
+                                            Start Prediction
+                                            <ArrowRight className="w-5 h-5" />
+                                        </>
+                                    )}
+                                </button>
+                            </form>
                         </div>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-2">
-                                    City
-                                </label>
-                                <input
-                                    type="text"
-                                    id="city"
-                                    value={city}
-                                    onChange={(e) => setCity(e.target.value)}
-                                    required
-                                    placeholder="Enter city name"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    {/* Reservoir Level Reference Popup */}
+                    {showReservoirPopup && (
+                        <div className="fixed inset-0 bg-slate-900/50 bg-opacity-50 flex items-center justify-center z-50">
+                            <div className="bg-slate-700 rounded-lg p-6 max-w-2xl relative">
+                                <h3 className="text-lg text-white font-semibold mb-4">Reservoir Level Reference</h3>
+                                <img
+                                    src="https://i.ibb.co/JWh4WW97/combined.jpg"
+                                    alt="Reservoir level reference chart"
+                                    className="w-full h-auto rounded"
                                 />
-                            </div>
-
-                            <div>
-                                <label htmlFor="dayOption" className="block text-sm font-medium text-gray-700 mb-2">
-                                    Prediction Period
-                                </label>
-                                <select
-                                    id="dayOption"
-                                    value={dayOption}
-                                    onChange={(e) => setDayOption(e.target.value)}
-                                    required
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                >
-                                    <option value="">Select period</option>
-                                    <option value="3">Next 3 days (Today)</option>
-                                    <option value="4">Next 4 days (Tomorrow)</option>
-                                    <option value="5">Next 5 days (Day after tomorrow)</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label htmlFor="soilType" className="block text-sm font-medium text-gray-700 mb-2">
-                                    <span className="inline-flex items-center">
-                                        <Droplet className="inline w-4 h-4 mr-2" />
-                                        Soil Type
-                                    </span>
-                                </label>
-                                <select
-                                    id="soilType"
-                                    value={soilType}
-                                    onChange={(e) => setSoilType(e.target.value)}
-                                    required
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                >
-                                    <option value="">Select Soil Type</option>
-                                    {soilTypes.map(soil => (
-                                        <option key={soil.name} value={soil.name}>
-                                            {soil.name} ({soil.range[0]}%-{soil.range[1]}%)
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div>
-                                <div className="flex items-center justify-between mb-2">
-                                    <label htmlFor="reservoirLevel" className="block text-sm font-medium text-gray-700">
-                                        <span className="inline-flex items-center" >
-                                            <CloudRain className="inline w-4 h-4 mr-2" />
-                                            Reservoir Level (%)
-                                        </span>
-                                    </label>
+                                <div className="mt-4 flex justify-between items-center">
+                                    <p className="text-sm text-white">
+                                        Use this chart as a reference to estimate the current reservoir level percentage.
+                                    </p>
                                     <button
-                                        type="button"
-                                        onClick={() => setShowReservoirPopup(true)}
-                                        className="text-blue-600 hover:text-blue-800 focus:outline-none justbtn"
-                                        aria-label="Show reservoir level reference"
+                                        onClick={() => setShowReservoirPopup(false)}
+                                        className="ok ml-4 text-white hover:text-white text-md"
+                                        aria-label="Close popup"
                                     >
-                                        <Info className="w-4 h-4" />
+                                        Close
                                     </button>
                                 </div>
-                                <input
-                                    type="number"
-                                    id="reservoirLevel"
-                                    value={reservoirLevel}
-                                    onChange={(e) => setReservoirLevel(e.target.value)}
-                                    min="0"
-                                    max="100"
-                                    step="0.1"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                />
-                            </div>
-
-                            <div>
-                                <label htmlFor="previousFloods" className="block text-sm font-medium text-gray-700 mb-2">
-                                    <span className="inline-flex items-center">
-                                        <History className="w-4 h-4 mr-2" />
-                                        Previous Floods (last month)
-                                    </span>
-                                </label>
-                                <select
-                                    id="previousFloods"
-                                    name="previousFloods"
-                                    value={previousFloods}
-                                    onChange={(e) => setPreviousFloods(e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    required
-                                >
-                                    <option value="">Select Option</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
-                                </select>
                             </div>
                         </div>
-
-                        {error && (
-                            <div className="p-4 bg-red-100 text-red-700 rounded-lg">
-                                <strong>{error.error}:</strong> {error.message}
-                            </div>
-                        )}
-
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className={`w-full py-3 px-6 rounded-lg text-white font-semibold transition-all ${loading
-                                ? 'bg-gray-400 cursor-not-allowed'
-                                : 'bg-[#E63946] hover:bg-red-700 hover:scale-[1.02]'
-                                }`}
-                        >
-                            {loading ? 'Analyzing...' : 'Predict'}
-                        </button>
-                    </form>
+                    )}
                 </div>
             </div>
-
-            {/* Reservoir Level Reference Popup */}
-            {showReservoirPopup && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 max-w-2xl relative">
-                        <h3 className="text-lg font-semibold mb-4">Reservoir Level Reference</h3>
-                        <img
-                            src="https://i.ibb.co/JWh4WW97/combined.jpg"
-                            alt="Reservoir level reference chart"
-                            className="w-full h-auto rounded"
-                        />
-                        <div className="mt-4 flex justify-between items-center">
-                            <p className="text-sm text-gray-600">
-                                Use this chart as a reference to estimate the current reservoir level percentage.
-                            </p>
-                            <button
-                                onClick={() => setShowReservoirPopup(false)}
-                                className="ok ml-4 text-gray-500 hover:text-gray-700 text-sm"
-                                aria-label="Close popup"
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }

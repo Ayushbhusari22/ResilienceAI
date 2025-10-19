@@ -1,41 +1,23 @@
 import { Satellite, Radar, Brain } from 'lucide-react';
-import './App.css';
 
 function TechnologySection() {
     return (
-        <div id="technology" className="technology-section">
-            <div className="technology-container">
-                <h2 className="section-title">Advanced Technologies</h2>
-                <div className="technology-grid">
-                    <div>
-                        <img
-                            src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1000"
-                            alt="Technology Dashboard"
-                            className="technology-image"
-                        />
-                    </div>
-                    <div className="technology-list">
-                        <div className="technology-item">
-                            <Satellite className="technology-icon" />
-                            <div>
-                                <h3 className="item-title">Satellite Monitoring</h3>
-                                <p className="item-description">Real-time satellite imagery analysis for comprehensive environmental monitoring.</p>
+        <div id="technology" className="bg-slate-950">
+            <div className="py-20 border-t border-slate-800">
+                <div className="container mx-auto px-6">
+                    <h2 className="text-4xl font-bold text-white mb-16 text-center">Advanced Technology Stack</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {[
+                            { icon: Satellite, title: "Satellite Monitoring", desc: "Real-time satellite imagery analysis for global coverage" },
+                            { icon: Radar, title: "Advanced Radar", desc: "High-precision weather monitoring systems" },
+                            { icon: Brain, title: "AI & ML", desc: "Cutting-edge predictive algorithms" }
+                        ].map((tech, idx) => (
+                            <div key={idx} className="rounded-2xl p-8 bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 hover:border-cyan-500/50 transition-all group">
+                                <tech.icon className="w-12 h-12 text-purple-400 mb-4 group-hover:text-pink-400 transition-colors" />
+                                <h3 className="text-xl font-bold text-white mb-2">{tech.title}</h3>
+                                <p className="text-slate-400">{tech.desc}</p>
                             </div>
-                        </div>
-                        <div className="technology-item">
-                            <Radar className="technology-icon" />
-                            <div>
-                                <h3 className="item-title">Advanced Radar Systems</h3>
-                                <p className="item-description">High-precision weather and atmospheric condition monitoring.</p>
-                            </div>
-                        </div>
-                        <div className="technology-item">
-                            <Brain className="technology-icon" />
-                            <div>
-                                <h3 className="item-title">AI & Machine Learning</h3>
-                                <p className="item-description">Cutting-edge algorithms for predictive analysis and risk assessment.</p>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </div>
